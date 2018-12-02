@@ -5,6 +5,8 @@
 #include "struct.h"
 #include "oper.h"
 
+/*Algoritmo que decide o salto de custo mínimo entre os 8 saltos possíveis para certa posição*/
+
 int find_next_step(int** matriz,int x,int y, int xmax, int ymax){
     int Vmin = 100;
     int n=0;
@@ -76,6 +78,8 @@ int find_next_step(int** matriz,int x,int y, int xmax, int ymax){
     return n;
 }
 
+/*  Muda as coordenadas de x e y para representar um salto na direção escolhida por find_next_step e adiciona o valor da posição ao custo*/
+
 void move_next_stepA(int** matriz, int *x, int *y, int *custo, int linha, int coluna ){
     int n;
     n = find_next_step(matriz,*x, *y, linha, coluna);
@@ -125,11 +129,15 @@ void move_next_stepA(int** matriz, int *x, int *y, int *custo, int linha, int co
 
 }
 
+/*Adiciona o valor da posição ao custo*/
+
 void move_next_stepB(int** matriz, int *x, int *y, int *custo){ 
 
     *custo += matriz[*x][*y];
 
 }
+
+/*  Testes para garantir que o salto efetuado não vai para fora do mapa ou para um ponto inacessível  */
 
 int salto_1(int x, int y){
     int validade;
@@ -211,6 +219,8 @@ int salto_8(int x, int y){
     return validade;
 }
 
+/*Verifica que a posição está dentro do mapa e é acessível*/
+
 int checklocations(int x, int y, int nlinhas, int ncolunas, int** mapa){
 
     if((x>=(nlinhas)) || (y>=(ncolunas)) || (x < 0)|| (y < 0)){
@@ -225,6 +235,8 @@ int checklocations(int x, int y, int nlinhas, int ncolunas, int** mapa){
         return 0;
 
 }
+
+/*  Verifica que o salto entre x0 e x, y0 e y é possível    */
 
 int check_knight_jump(int x0, int y0, int x, int y){
     if((abs(x0-x)==2) && ((abs(y0-y)==1))){

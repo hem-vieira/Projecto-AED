@@ -118,70 +118,77 @@ bool existeAberto(GRAFO *g, int *aberto){
     }
 }
 
-//Vai à procura do meno nó aberto*/
+/*Vai à procura do meno nó aberto*/
+
 int menorDist(GRAFO *g, int *aberto, int *d){
     int i;
-    //Vai a procura do primeiro indice com sinal que esta aberto
+
+    /*Vai a procura do primeiro indice com sinal que esta aberto*/
+
     for (i = 0; i < g->vertices; i++){
         if(aberto[i])
             break;
     }
-    //"varreu" e nao encontro entao volta ao ciclo
+
+    /*"varreu" e nao encontro entao volta ao ciclo*/
+
     if (i == g->vertices)
         return (-1);
     int menor = i;
-    //a partir do que foi calculado
+
+    /*a partir do que foi calculado*/
+
     for (i = menor + 1; i < g->vertices; i++){
         if(aberto[i] && (d[menor] > d[i]))
             menor = i;
-        return menor; //indice do arranjo com menor distancia
+        return menor; /*indice do arranjo com menor distancia*/
     }
 }
 
-int *dijkstra(GRAFO *g, int s){
+/*Função chamada para calcular o caminho de custo mínimo entre dois pontos*/
+    
+    int *dijkstra(GRAFO *g, int s){
     int *d = (int*) malloc (g->vertices * sizeof(int));
-    //arranjo dos predecessores 
+
+    /*arranjo dos predecessores */
+
     int p[g->vertices];
-    //inicializar distancias e predecessores
+
+    /*inicializar distancias e predecessores*/
+
     bool aberto[g->vertices];
     int i;
     for(i = 0; i<g->vertices; i++){
-        //marcar todos os pontos como abertos
+
+        /*marcar todos os pontos como abertos*/
+
         aberto[i] = true;
     }
 
     while (existeAberto(g, aberto)){
         int u = menorDist(g, aberto);
-        //vai escolher de todos os abertos o que tem menor distancia
+
+        /*vai escolher de todos os abertos o que tem menor distancia*/
+
         aberto[u] = false;
-        //vai fechar o nó do ponto com menor custo
+
+        /*vai fechar o nó do ponto com menor custo*/
 
         ADJACENCIA *ad = g->adj[u].cab;
-        while(ad){ //procurar nos vizinhos de u que acabou de ser fechado 
+        while(ad){                               /*procurar nos vizinhos de u que acabou de ser fechado */
             relaxa(g, d, p, u, ad->vertice);
             ad = ad->prox;
 
         }
     }
     return(d);
-    //retornamos arranjo com as distâncias 
+
+    /*retornamos arranjo com as distâncias */
 }
 
 
 /*Estruturas necessarias para o programa*/
-/*
-typedef struct _Vertice{
 
-    int x_vert;
-    int y_vert;
-}VERTICE;
-
-typedef struct _adjacencia{
-    int vertice_f;
-    int peso;
-    struct ADJACENCIA *next;
-}ADJACENCIA;
-*/
 /*
 Graphinit cria grafo com o número final de vértices, sem arestas.
 GraphinsertE insere uma aresta, caso não exista .
@@ -192,7 +199,7 @@ Graphdestroy faz o inverso de Graphinit.
 */
 
 
-
+/*
 GRAFO createGraph(int vertices);
 void addEdge(GRAFO* graph, int src, int dest);
 void printGraph(GRAFO* graph);
@@ -214,4 +221,4 @@ int main()
     printGraph(graph);
  
     return 0;
-}
+}*/

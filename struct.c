@@ -5,14 +5,17 @@
 #include "ficheiro.h"
 
 /*Estrutura que guarda os dados referentes a cada mapa*/
+
 void criaNovoNo (ronda** lp)
  {
   ronda *novoNo;
 
   novoNo = (ronda*) malloc(sizeof(ronda));
+  
   if (novoNo == NULL){
       exit (0);
   }
+
   else if(novoNo!=NULL) {
     novoNo->coluna =0;
     novoNo->linha =0;
@@ -21,6 +24,7 @@ void criaNovoNo (ronda** lp)
 
     *lp = novoNo;    
   } 
+
   else{
       exit(0);
   }

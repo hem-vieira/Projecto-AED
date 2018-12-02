@@ -20,23 +20,36 @@
 
 
 int main(int argc, char *argv[]) {
+
+    /*  Defenição das variáveis utilizadas    */
+
     char *nameFIn, *nameFOut;
-   // char temp[100];
     FILE *fpIn ,*fpOut ;
     fpIn = NULL;
     fpOut = NULL;
     ronda* lp;
     int j = 0;
-    int i = 0;
+    int i;
     int x0, y0;
-    int error_flag;
-    int custo = 0, validade = -1;
+    int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
+    int erro;
+    int breakerr;  /* variável que ajuda na terminação de certos ciclos caso haja um erro*/
+    int pos_err; /* variável que impede o programa de continuar caso uma das posições dadas esteja fora do mapa ou de valor 0*/
+    int jmp_err; /* variável que impede o programa de continuar caso uma das posições esteja fora do alcance dum salto de cavalo */
+    int custo;
+    int validade;
     int *x, *y;
-   /* int coord[2]={0};*/
+
+
+    /*  Confirma o número de argumentos */
+
     nameFIn = argv[1];
     if (argc != 2){
         exit(0);
     }
+
+    /*  Aloca memória para o nome do ficheiro de saída e substitui a terminação .cities por .walks  */
+
     nameFOut = (char*)malloc(strlen(nameFIn)+strlen(".walks")+1);  
     if(nameFOut == NULL){
         exit (0);
@@ -50,21 +63,26 @@ int main(int argc, char *argv[]) {
     nameFOut[j] = 0;
     strcat(nameFOut,".walks");
     
-    /*  Open input file */
+    /*  Abre o ficheiro de entrada */
+
     fpIn = fopen(nameFIn, "r");
     if (fpIn == NULL){
         exit(0);
     }
-    /*  Open output file */
+    /*  Abre o ficheiro de saída */
+
     fpOut = fopen(nameFOut, "w");
     if (fpOut == NULL){
         exit(0);
     }
-/*Ciclo do programa*/
-while (!feof(fpIn)){
+    /*  Ciclo do programa   */
+
+    while (!feof(fpIn)){
 
     /*Inicialização da estrutura*/
      criaNovoNo(&lp);
+
+
     i = 0;
     x0 = 0;
     y0 = 0;
@@ -72,12 +90,23 @@ while (!feof(fpIn)){
     y = NULL;
     custo = 0;
     validade = -1;
-    int erro = 0;
+    erro = 0;
     error_flag = 0;
+
+/*  Lê a primeira linha do ficheiro de entrada e obtêm a dimensão do mapa (linha * coluna), o modo e o número de atrações   */
+
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
+
+/*  Aloca os vetores de acordo com o número de atrações */
+
     x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
     y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
+
+/*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
+
     readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
+
+/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/    
     int **mapa;
     mapa = alocMapa(lp->linha, lp->coluna);
     
@@ -90,20 +119,18 @@ while (!feof(fpIn)){
         }
                         
     }
-   /* 
-    for (j = 0; j<(lp->linha);j++){
-        for (i = 0; i<(lp->coluna);i++){
-            printf("%d  ", mapa[j][i]);
-        }
-        printf("\n");
-            
-    }
-*/
-    if ((lp->modo != 'A' ) && (lp->modo != 'B')){
+
+ /* TESTES DE ERROS*/
+ 
+ /* Confirma se o modo escolhido é válido   */   
+
+    if ((lp->modo != 'A' ) && (lp->modo != 'B') && (lp->modo != 'C')){
         fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
         error_flag = 1;
 
     }
+
+  /*    Confirma se existem duas ou mais atrações para o modo B    */  
 
     if(error_flag != 1){
         if(((lp->modo) == 'B') && ((lp->numAtrac)<2)){
@@ -113,6 +140,9 @@ while (!feof(fpIn)){
 
         }
     }
+
+     /*    Confirma se existem apenas duas atrações para o modo A    */ 
+
     if(error_flag != 1){
         if(((lp->modo) == 'A') && ((lp->numAtrac)!=2)){
             fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
@@ -120,15 +150,26 @@ while (!feof(fpIn)){
         }  
     }
 
-    int breakerr = 0;
+     /*    Confirma se existem duas ou mais atrações para o modo C    */ 
 
     if(error_flag != 1){
-        int pos_err;
+        if(((lp->modo) == 'C') && ((lp->numAtrac)<2)){
+            fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
+                    error_flag = 1;
+
+
+        }
+    }
+
+/* Confirma se todas as posições dadas no ficheiro de entrada são válidas ( dentro do mapa e de valor > 0)  */
+
+    breakerr = 0;
+
+    if(error_flag != 1){
         for (i = 0; i < (lp->numAtrac); i++){
             pos_err = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
             if (pos_err == 1){
                 breakerr = 1;
-               // printf("Erro 6\n");
                 fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
 
             }
@@ -139,13 +180,14 @@ while (!feof(fpIn)){
         }
     }
 
+/* Confirma se todas as posições dadas estão ao alcance dum salto de cavalo da posição anteriro (FASE 1) */    
+
         if(error_flag != 1){
-            int jmp_err;
+           
             for (i = 0; i < ((lp->numAtrac)-1); i++){
                 jmp_err = check_knight_jump(x[i], y[i], x[i+1], y[i+1]);
                 if (jmp_err == 1){
                     breakerr = 1;
-                  //  printf("Erro 7\n");
                     fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
                 }
                 if(breakerr == 1){
@@ -155,6 +197,11 @@ while (!feof(fpIn)){
             }
         }
 
+
+/*FIM DE TESTES DE ERROS*/
+
+
+/*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 
     if(error_flag != 1 ){
         if ((lp->modo == 'A')){
@@ -173,11 +220,14 @@ while (!feof(fpIn)){
         
             }   
         }
+        else if(lp->modo == 'C'){
+
+        }
         
-        fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
+        fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo); //acrescentar
     }
 
-/* -- FREE ANY MEMORY YOU HAVE ALLOCATED -- */
+/* Libertação de memórias */
    
         for (i = 0; i < (lp->linha); i++){
         int* current = mapa[i];
@@ -188,12 +238,14 @@ while (!feof(fpIn)){
         free(x);
         free(y);
 
-}/*Fim do ciclo do programa*/
+}   /*Fim do ciclo do programa*/
 
-/* -- FREE SOME MORE MEMORY YOU HAVE ALLOCATED -- */
+/* Libertação de memória alocada para o ficheiro de saída */
+
     free(nameFOut);
 
-/* -- CLOSE ALL OPENED FILES -- */
+/* Fecho dos ficheiros abertos e saída do programa */
+
     fclose(fpIn);
     fclose(fpOut);
 

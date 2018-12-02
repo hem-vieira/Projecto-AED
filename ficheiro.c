@@ -5,13 +5,16 @@
 #include "struct.h"
 #include "oper.h"
 
-/* Funções que extraem do ficheiro os dados precisos*/
+/* Garante que foi feita a leitura de 4 valores na primeira linha do ficheiro de entrada	*/
+
 void readFileHeader(FILE *fp, int *linhas, int *colunas, char *modo, int *nAtrac){
-    /* safeguard*/
+
     if(fscanf(fp, "%d %d %c %d", linhas, colunas, modo, nAtrac) != 4){
         exit(0);
     }
 }
+
+/* Garante que foi feita a leitura de 2 valores para nAtrac linhas*/
 
 void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac){
     int i = 0;
@@ -19,6 +22,7 @@ void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac){
         if(fscanf(fp, "%d %d", &x[i], &y[i]) != 2){
             exit(0);
         }
+
         *x0 = x[0];
         *y0 = y[0];
 
@@ -27,10 +31,14 @@ void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac){
 
 }
 
+/*Aloca o mapa*/
+
 int **alocMapa(int linhas, int colunas){
     int **matriz;
     int i = 0;
+
     /*Alocação da memória para a matriz*/
+
     matriz = (int**)malloc((linhas)*sizeof(int*));
     if( matriz == NULL ){
         exit(0);
