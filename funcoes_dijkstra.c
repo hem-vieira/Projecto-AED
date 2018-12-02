@@ -4,79 +4,8 @@
 #include "struct.h"
 #include "ficheiro.h"
 #include "oper.h"
-NO* createNode(int);
 
-typedef struct node
-{
-    VERTICE vertex;
-    struct node* next;
-}NO;
-
-typedef struct Graph{
-    int numVertices;
-    NO** adjLists;
-}GRAFO;
-
-/*coordenadas e valor de cada vertice*/
-typedef struct _vertice{
-    int x_vert;
-    int y_vert;
-    int peso;
-}VERTICE;
-
-
-
-NO* createNode(int v)
-{
-    NO* newNode = malloc(sizeof(NO));
-    newNode->vertex = v;
-    newNode->next = NULL;
-    return newNode;
-}
-
-
-GRAFO* createGraph(int vertices)
-{
-    GRAFO* graph = malloc(sizeof(GRAFO));
-    graph->numVertices = vertices;
- 
-    graph->adjLists = malloc(vertices * sizeof(NO*));
- 
-    int i;
-    for (i = 0; i < vertices; i++)
-        graph->adjLists[i] = NULL;
- 
-    return graph;
-}
- 
-void addEdge(GRAFO* graph, int src, int dest)
-{
-    /* Add edge from src to dest*/
-    NO* newNode = createNode(dest);
-    newNode->next = graph->adjLists[src];
-    graph->adjLists[src] = newNode;
- 
-    /* Add edge from dest to src*/
-    newNode = createNode(src);
-    newNode->next = graph->adjLists[dest];
-    graph->adjLists[dest] = newNode;
-}
- 
-void printGraph(GRAFO* graph)
-{
-    int v;
-    for (v = 0; v < graph->numVertices; v++)
-    {
-        NO* temp = graph->adjLists[v];
-        printf("\n Adjacency list of vertex %d\n ", v);
-        while (temp)
-        {
-            printf("%d -> ", temp->vertex);
-            temp = temp->next;
-        }
-        printf("\n");
-    }
-}
+/* DJIKSTRA*/
 
 
 void inicializaD(GRAFO *g, int *d, int *p, int s){

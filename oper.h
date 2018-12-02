@@ -5,6 +5,7 @@
 #include "struct.h"
 #include "ficheiro.h"
 
+int fillgraph(int** matriz,int x,int y, int xmax, int ymax);
 int find_next_step(int** matriz,int x,int y, int xmax, int ymax);
 void move_next_stepA(int** matriz, int *x, int *y, int *custo, int linha, int coluna);
 void move_next_stepB(int** matriz, int *x, int *y, int *custo);   

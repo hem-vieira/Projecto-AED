@@ -28,11 +28,12 @@ int main(int argc, char *argv[]) {
     fpIn = NULL;
     fpOut = NULL;
     ronda* lp;
+    GRAFO* grafo;
     int j = 0;
     int i;
     int x0, y0;
     int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
-    int erro;
+    int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
     int breakerr;  /* variável que ajuda na terminação de certos ciclos caso haja um erro*/
     int pos_err; /* variável que impede o programa de continuar caso uma das posições dadas esteja fora do mapa ou de valor 0*/
     int jmp_err; /* variável que impede o programa de continuar caso uma das posições esteja fora do alcance dum salto de cavalo */
@@ -199,6 +200,15 @@ int main(int argc, char *argv[]) {
 
 
 /*FIM DE TESTES DE ERROS*/
+
+grafo = createGraph((lp->linhas)*(lp->colunas));
+
+if(error_flag != 1){
+
+    for (j = 0; j<(lp->linha);j++){
+        for (i = 0; i<(lp->coluna);i++){
+            fillgraph(mapa, j, i, (lp->linha), (lp->coluna));
+            if()
 
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
