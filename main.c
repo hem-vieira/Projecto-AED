@@ -17,26 +17,31 @@
 #include "ficheiro.h"
 #include "struct.h" 
 #include "oper.h"
+#include "acervo.h"
+#include "operAcervo.h"
+
+
+
 
 
 int main(int argc, char *argv[]) {
 
-    /*  Defenição das variáveis utilizadas    */
+    /*  Definição das variáveis utilizadas    */
 
     char *nameFIn, *nameFOut;
     FILE *fpIn ,*fpOut ;
     fpIn = NULL;
     fpOut = NULL;
     ronda* lp;
-    GRAFO* grafo;
+   /* GRAFO* grafo;*/
     int j = 0;
     int i;
     int x0, y0;
     int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
-    int breakerr;  /* variável que ajuda na terminação de certos ciclos caso haja um erro*/
-    int pos_err; /* variável que impede o programa de continuar caso uma das posições dadas esteja fora do mapa ou de valor 0*/
-    int jmp_err; /* variável que impede o programa de continuar caso uma das posições esteja fora do alcance dum salto de cavalo */
+    //int breakerr;  /* variável que ajuda na terminação de certos ciclos caso haja um erro*/
+    //int pos_err; /* variável que impede o programa de continuar caso uma das posições dadas esteja fora do mapa ou de valor 0*/
+    //int jmp_err; /* variável que impede o programa de continuar caso uma das posições esteja fora do alcance dum salto de cavalo */
     int custo;
     int validade;
     int *x, *y;
@@ -163,12 +168,12 @@ int main(int argc, char *argv[]) {
     }
 
 /* Confirma se todas as posições dadas no ficheiro de entrada são válidas ( dentro do mapa e de valor > 0)  */
-
+/*
     breakerr = 0;
 
     if(error_flag != 1){
         for (i = 0; i < (lp->numAtrac); i++){
-            pos_err = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
+           // pos_err = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
             if (pos_err == 1){
                 breakerr = 1;
                 fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
@@ -180,13 +185,13 @@ int main(int argc, char *argv[]) {
             }
         }
     }
-
+*/
 /* Confirma se todas as posições dadas estão ao alcance dum salto de cavalo da posição anteriro (FASE 1) */    
-
+/*
         if(error_flag != 1){
            
             for (i = 0; i < ((lp->numAtrac)-1); i++){
-                jmp_err = check_knight_jump(x[i], y[i], x[i+1], y[i+1]);
+              //  jmp_err = check_knight_jump(x[i], y[i], x[i+1], y[i+1]);
                 if (jmp_err == 1){
                     breakerr = 1;
                     fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
@@ -198,24 +203,24 @@ int main(int argc, char *argv[]) {
             }
         }
 
-
+*/
 /*FIM DE TESTES DE ERROS*/
-
+/*
 grafo = createGraph((lp->linhas)*(lp->colunas));
-
+*//*
 if(error_flag != 1){
 
     for (j = 0; j<(lp->linha);j++){
         for (i = 0; i<(lp->coluna);i++){
             fillgraph(mapa, j, i, (lp->linha), (lp->coluna));
             if()
-
+*/
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 
     if(error_flag != 1 ){
         if ((lp->modo == 'A')){
-                move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
+              //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
                 if(custo!=0)
                      validade = 1;
                  else 
@@ -225,7 +230,7 @@ if(error_flag != 1){
 
             for(i=1; i<=((lp->numAtrac) - 1); i++)
             {
-                move_next_stepB(mapa, &x[i], &y[i], &custo);
+              //  move_next_stepB(mapa, &x[i], &y[i], &custo);
                 validade = 1;
         
             }   

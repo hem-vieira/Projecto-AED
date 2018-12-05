@@ -5,7 +5,7 @@
 #include "struct.h"
 #include "oper.h"
 
-
+/*
 int fillgraph(int** matriz,int x,int y, int xmax, int ymax){
 
     xmax = xmax-1;
@@ -13,45 +13,50 @@ int fillgraph(int** matriz,int x,int y, int xmax, int ymax){
 
     if(salto_1(x, y) == 1){                                             //x-1, y-2
         addEdge(GRAFO* graph, x, y, x-1, y-2, matriz[x][y], matriz[x-1][y-2]);
-        }
+       
+        
     }
 
     if (salto_2( x,  y,  xmax ) == 1){                                  //x+1, y-2
        addEdge(GRAFO* graph, x, y, x+1, y-2, matriz[x][y], matriz[x+1][y-2]);
-        }
+        
     }
 
     if (salto_3( x,  y,  xmax ) == 1){                                  //x+2, y-1
         addEdge(GRAFO* graph, x, y, x+2, y-1, matriz[x][y], matriz[x+2][y-1]);
-        }
+        
     }
 
     if (salto_4( x, y, xmax, ymax) == 1){                               //x+2, y+1
         addEdge(GRAFO* graph, x, y, x+2, y+1, matriz[x][y], matriz[x+2][y+1]);
-        }
+        
     }
 
     if (salto_5( x, y, xmax, ymax) == 1){                                //x+1, y+2
         addEdge(GRAFO* graph, x, y, x+1, y+2, matriz[x][y], matriz[x+1][y+2]);
-        }
+        
     }
 
     if (salto_6( x,  y,  ymax ) == 1){                                   //x-1, y+2
         addEdge(GRAFO* graph, x, y, x-1, y+2, matriz[x][y], matriz[x-1][y+2]);
-        }
+        
     }
 
     if (salto_7( x,  y,  ymax ) == 1){                                  //x-2, y+1
         addEdge(GRAFO* graph, x, y, x-2, y+1, matriz[x][y], matriz[x-2][y+1]);
-        } 
+         
     }
 
     if (salto_8(x, y) == 1){                                            //x-2, y-1
         addEdge(GRAFO* graph, x, y, x-2, y-1, matriz[x][y], matriz[x-2][y-1]);
-        }
+        
     }
+}
+
+*/
 
 /*Algoritmo que decide o salto de custo mínimo entre os 8 saltos possíveis para certa posição
+
 int find_next_step(int** matriz,int x,int y, int xmax, int ymax){
 
     int Vmin = 100;
@@ -127,9 +132,15 @@ int find_next_step(int** matriz,int x,int y, int xmax, int ymax){
 */
 /*  Muda as coordenadas de x e y para representar um salto na direção escolhida por find_next_step e adiciona o valor da posição ao custo*/
 
+
+/*
+
+
+
+
 void move_next_stepA(int** matriz, int *x, int *y, int *custo, int linha, int coluna ){
     int n;
-    n = find_next_step(matriz,*x, *y, linha, coluna);
+  //  n = find_next_step(matriz,*x, *y, linha, coluna);
     if (n == 1){
         *x = *x -1;
         *y = *y-2;
@@ -176,16 +187,21 @@ void move_next_stepA(int** matriz, int *x, int *y, int *custo, int linha, int co
 
 }
 
-/*Adiciona o valor da posição ao custo*/
 
+*/
+
+/*Adiciona o valor da posição ao custo*/
+/*
 void move_next_stepB(int** matriz, int *x, int *y, int *custo){ 
 
     *custo += matriz[*x][*y];
 
 }
+*/
+
 
 /*  Testes para garantir que o salto efetuado não vai para fora do mapa ou para um ponto inacessível  */
-
+/*
 int salto_1(int x, int y){
     int validade;
     if((x > 0) && (y - 2) >= 0)
@@ -265,6 +281,7 @@ int salto_8(int x, int y){
 
     return validade;
 }
+*/
 
 /*Verifica que a posição está dentro do mapa e é acessível*/
 

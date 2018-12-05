@@ -9,19 +9,12 @@ typedef struct _ronda{
     char modo;
     int numAtrac;
 }ronda;
-
+/*
 typedef struct node
 {
     VERTICE vertex;
     struct node* next;
-}NO;
-
-typedef struct Graph{
-    int numVertices;
-    NO** adjLists;
-}GRAFO;
-
-/*coordenadas e valor de cada vertice*/
+}NO;*/
 
 typedef struct _vertice{
     int x_vert;
@@ -29,6 +22,14 @@ typedef struct _vertice{
     int peso;
     struct _vertice* next;
 }VERTICE;
+
+typedef struct Graph{
+    int numVertices;
+    VERTICE** adjLists;
+}GRAFO;
+
+/*coordenadas e valor de cada vertice*/
+
 
 
 void matAlloc(ronda *lp, int *colunas,int *linhas);

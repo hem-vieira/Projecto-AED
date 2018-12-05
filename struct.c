@@ -34,14 +34,14 @@ void criaNovoNo (ronda** lp)
 
 GRAFO* createGraph(int vertices)
 {
-    GRAFO* graph = malloc(sizeof(GRAFO));
+    GRAFO* graph = malloc(vertices * sizeof(GRAFO));
 
     if(graph == NULL){
       exit(0);
     }
-
+/*
     graph->numVertices = vertices;
- 
+ */
     graph->adjLists = malloc(vertices * sizeof(VERTICE*));
 
     if(graph->adjLists == NULL){
@@ -72,19 +72,27 @@ VERTICE* createVertice(int x, int y, int peso)
 
 }
 
+
+
+
+/*duvida*/
+/*
 void addEdge(GRAFO* graph, int srcx, int srcy, int destx, int desty, int pesosrc, int pesodest)
-{
+{*/
     /* Add edge from src to dest*/
     //vertice = createVertice(destx, desty, pesodest);
-    vertice->next = graph->adjLists[src];
+  /*  vertice->next = graph->adjLists[src];
     graph->adjLists[src] = vertice;
- 
+ */
     /* Add edge from dest to src*/
    // vertice = createVertice(srcx, srcy, pesosrc);
-    vertice->next = graph->adjLists[dest];
+  /*  vertice->next = graph->adjLists[dest];
     graph->adjLists[dest] = vertice;
-}
+}*/
  
+
+
+
 /*void printGraph(GRAFO* graph)
 {
     int v;
