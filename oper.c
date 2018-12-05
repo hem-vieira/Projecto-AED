@@ -5,55 +5,69 @@
 #include "struct.h"
 #include "oper.h"
 
-/*
-int fillgraph(int** matriz,int x,int y, int xmax, int ymax){
 
+int **encontraAdj(int** matriz,int x,int y, int xmax, int ymax){
+    int **adj;
+    int i = 0;
     xmax = xmax-1;
     ymax = ymax-1;
 
-    if(salto_1(x, y) == 1){                                             //x-1, y-2
-        addEdge(GRAFO* graph, x, y, x-1, y-2, matriz[x][y], matriz[x-1][y-2]);
-       
-        
+    for(i=0; i<=7; i++){
+    adj[i][0] = -1;
+    adj[i][1] = -1;
     }
 
-    if (salto_2( x,  y,  xmax ) == 1){                                  //x+1, y-2
-       addEdge(GRAFO* graph, x, y, x+1, y-2, matriz[x][y], matriz[x+1][y-2]);
-        
+    if(salto_1(x, y) == 1 && (matriz[x-1][y-2] > 0)){                                             //x-1, y-2
+        adj[i][0] = x-1;
+        adj[i][1] = y-2;
+        i++;
     }
 
-    if (salto_3( x,  y,  xmax ) == 1){                                  //x+2, y-1
-        addEdge(GRAFO* graph, x, y, x+2, y-1, matriz[x][y], matriz[x+2][y-1]);
-        
+    if (salto_2( x,  y,  xmax ) == 1 && (matriz[x+1][y-2] > 0)){                                  //x+1, y-2
+        adj[i][0] = x+1;
+        adj[i][1] = y-2;
+        i++;   
     }
 
-    if (salto_4( x, y, xmax, ymax) == 1){                               //x+2, y+1
-        addEdge(GRAFO* graph, x, y, x+2, y+1, matriz[x][y], matriz[x+2][y+1]);
-        
+    if (salto_3( x,  y,  xmax ) == 1 && (matriz[x+2][y-1] > 0)){                                  //x+2, y-1
+        adj[i][0] = x+2;
+        adj[i][1] = y-1;
+        i++;       
     }
 
-    if (salto_5( x, y, xmax, ymax) == 1){                                //x+1, y+2
-        addEdge(GRAFO* graph, x, y, x+1, y+2, matriz[x][y], matriz[x+1][y+2]);
-        
+    if (salto_4( x, y, xmax, ymax) == 1 && (matriz[x+2][y+1] > 0)){                               //x+2, y+1
+        adj[i][0] = x+2;
+        adj[i][1] = y+1;
+        i++;        
     }
 
-    if (salto_6( x,  y,  ymax ) == 1){                                   //x-1, y+2
-        addEdge(GRAFO* graph, x, y, x-1, y+2, matriz[x][y], matriz[x-1][y+2]);
-        
+    if (salto_5( x, y, xmax, ymax) == 1 && (matriz[x+1][y+2] > 0)){                                //x+1, y+2
+        adj[i][0] = x+1;
+        adj[i][1] = y+2;
+        i++;        
     }
 
-    if (salto_7( x,  y,  ymax ) == 1){                                  //x-2, y+1
-        addEdge(GRAFO* graph, x, y, x-2, y+1, matriz[x][y], matriz[x-2][y+1]);
-         
+    if (salto_6( x,  y,  ymax ) == 1 && (matriz[x-1][y+2] > 0)){                                   //x-1, y+2
+        adj[i][0] = x-1;
+        adj[i][1] = y+2;
+        i++;      
     }
 
-    if (salto_8(x, y) == 1){                                            //x-2, y-1
-        addEdge(GRAFO* graph, x, y, x-2, y-1, matriz[x][y], matriz[x-2][y-1]);
-        
+    if (salto_7( x,  y,  ymax ) == 1 && (matriz[x-2][y+1] > 0)){                                  //x-2, y+1
+        adj[i][0] = x-2;
+        adj[i][1] = y+1;
+        i++;         
     }
+
+    if (salto_8(x, y) == 1 && (matriz[x-2][y-1] > 0)){                                            //x-2, y-1
+        adj[i][0] = x-2;
+        adj[i][1] = y-1;
+        i++;        
+    }
+    return adj;
 }
 
-*/
+
 
 /*Algoritmo que decide o salto de custo mínimo entre os 8 saltos possíveis para certa posição
 
@@ -201,7 +215,7 @@ void move_next_stepB(int** matriz, int *x, int *y, int *custo){
 
 
 /*  Testes para garantir que o salto efetuado não vai para fora do mapa ou para um ponto inacessível  */
-/*
+
 int salto_1(int x, int y){
     int validade;
     if((x > 0) && (y - 2) >= 0)
@@ -281,7 +295,7 @@ int salto_8(int x, int y){
 
     return validade;
 }
-*/
+
 
 /*Verifica que a posição está dentro do mapa e é acessível*/
 

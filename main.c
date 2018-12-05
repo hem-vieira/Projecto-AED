@@ -18,11 +18,6 @@
 #include "struct.h" 
 #include "oper.h"
 #include "acervo.h"
-#include "operAcervo.h"
-
-
-
-
 
 int main(int argc, char *argv[]) {
 
@@ -33,9 +28,13 @@ int main(int argc, char *argv[]) {
     fpIn = NULL;
     fpOut = NULL;
     ronda* lp;
-   /* GRAFO* grafo;*/
+    heap* acervo;
+    int **adj;
+    int*** st;
+    int **wt;
     int j = 0;
     int i;
+    int k;
     int x0, y0;
     int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
@@ -94,6 +93,9 @@ int main(int argc, char *argv[]) {
     y0 = 0;
     x = NULL;
     y = NULL;
+    wt = NULL;
+    adj = NULL;
+    st = NULL;
     custo = 0;
     validade = -1;
     erro = 0;
@@ -102,6 +104,30 @@ int main(int argc, char *argv[]) {
 /*  Lê a primeira linha do ficheiro de entrada e obtêm a dimensão do mapa (linha * coluna), o modo e o número de atrações   */
 
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
+
+/**/
+    acervo = NewHeap(lp->linha , lp->coluna);
+/*Aloca vetores necessários ao programa*/
+for(i = 0; i < lp->linha; i++){
+    for(j = 0; j < lp->coluna; j++){
+        for(k = 0; k < 2; k++){
+            st = (int***)malloc(sizeof(int**));
+        }
+    }
+}
+
+for(i = 0; i < lp->linha; i++){
+    for(j = 0; j < lp->coluna; j++){
+        wt = (int**)malloc(sizeof(int*));
+    }
+}
+
+for(i = 0; i < 8; i++){
+    for(j = 0; j < 2; j++){
+        adj = (int**)malloc(sizeof(int*));
+    }
+}
+
 
 /*  Aloca os vetores de acordo com o número de atrações */
 
@@ -220,6 +246,9 @@ if(error_flag != 1){
 
     if(error_flag != 1 ){
         if ((lp->modo == 'A')){
+
+            Dijkstra(acervo, mapa, x0, y0, x[1], y[1], st, wt, adj);
+  
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
                 if(custo!=0)
                      validade = 1;
@@ -248,6 +277,7 @@ if(error_flag != 1){
         int* current = mapa[i];
         free(current);
         }
+        free(acervo);
         free(mapa);
         free(lp);
         free(x);

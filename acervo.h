@@ -1,29 +1,20 @@
-/*#include <stdio.h>
+#ifndef _ACERVO_H
+#define _ACERVO_H
+#include <stdio.h>
 #include <stdlib.h>
-#include "struct.h"
-#include "operAcervo.h"*/
-#include "Item.h"
 
-typedef struct _heap Heap;
+typedef struct _heap heap;
 
-Heap *NewHeap(int tamanho, int (*less) (Item, Item));
+heap *NewHeap(int linhas, int colunas);
 
-void FreeHeap(Heap * h);
+void FixUp(heap * h, int k);
 
-int Insert(Heap * h, Item element);
+void FixDown(heap * h, int k);
 
-int Direct_Insert(Heap * h, Item element);
+int Insert(heap * h, int pos_x, int pos_y);
 
-void Modify(Heap * h, int indice, Item newvalue);
+void changePrio(heap *h, int k, int novocusto);
 
-Item RemoveMax(Heap * h);
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt , int** adj);
 
-Item GetIndex(Heap * h, int index);
-
-void CleanHeap(Heap * h);
-
-int VerifyHeap(Heap * h);
-
-void HeapSort(Heap * h);
-
-void Heapify(Heap * h);
+#endif
