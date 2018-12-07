@@ -6,61 +6,61 @@
 #include "oper.h"
 
 
-    void encontraAdj(int** matriz, int x, int y, int xmax, int ymax, int*** adj){
+    void encontraAdj(int** matriz, int x, int y, int xmax, int ymax, int adj[8][2]){
     int i = 0;
     xmax = xmax-1;
     ymax = ymax-1;
 
     for(i=0; i<=7; i++){
-    *adj[i][0] = -1;
-    *adj[i][1] = -1;
+    adj[i][0] = -1;
+    adj[i][1] = -1;
     }
 
     if(salto_1(x, y) == 1 && (matriz[x-1][y-2] > 0)){                                             //x-1, y-2
-        *adj[i][0] = x-1;
-        *adj[i][1] = y-2;
+        adj[i][0] = x-1;
+        adj[i][1] = y-2;
         i++;
     }
 
     if (salto_2( x,  y,  xmax ) == 1 && (matriz[x+1][y-2] > 0)){                                  //x+1, y-2
-        *adj[i][0] = x+1;
-        *adj[i][1] = y-2;
+        adj[i][0] = x+1;
+        adj[i][1] = y-2;
         i++;   
     }
 
     if (salto_3( x,  y,  xmax ) == 1 && (matriz[x+2][y-1] > 0)){                                  //x+2, y-1
-        *adj[i][0] = x+2;
-       *adj[i][1] = y-1;
+        adj[i][0] = x+2;
+        adj[i][1] = y-1;
         i++;       
     }
 
     if (salto_4( x, y, xmax, ymax) == 1 && (matriz[x+2][y+1] > 0)){                               //x+2, y+1
-        *adj[i][0] = x+2;
-        *adj[i][1] = y+1;
+        adj[i][0] = x+2;
+        adj[i][1] = y+1;
         i++;        
     }
 
     if (salto_5( x, y, xmax, ymax) == 1 && (matriz[x+1][y+2] > 0)){                                //x+1, y+2
-        *adj[i][0] = x+1;
-        *adj[i][1] = y+2;
+        adj[i][0] = x+1;
+        adj[i][1] = y+2;
         i++;        
     }
 
     if (salto_6( x,  y,  ymax ) == 1 && (matriz[x-1][y+2] > 0)){                                   //x-1, y+2
-        *adj[i][0] = x-1;
-        *adj[i][1] = y+2;
+        adj[i][0] = x-1;
+        adj[i][1] = y+2;
         i++;      
     }
 
     if (salto_7( x,  y,  ymax ) == 1 && (matriz[x-2][y+1] > 0)){                                  //x-2, y+1
-        *adj[i][0] = x-2;
-        *adj[i][1] = y+1;
+        adj[i][0] = x-2;
+        adj[i][1] = y+1;
         i++;         
     }
 
     if (salto_8(x, y) == 1 && (matriz[x-2][y-1] > 0)){                                            //x-2, y-1
-        *adj[i][0] = x-2;
-        *adj[i][1] = y-1;
+        adj[i][0] = x-2;
+        adj[i][1] = y-1;
         i++;        
     }
    // return adj;

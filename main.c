@@ -20,7 +20,6 @@
 #include "acervo.h"
 
 int main(int argc, char *argv[]) {
-
     /*  Definição das variáveis utilizadas    */
 
     char *nameFIn, *nameFOut;
@@ -34,7 +33,6 @@ int main(int argc, char *argv[]) {
     int **wt;
     int j = 0;
     int i;
-    int k;
     int x0, y0;
     int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
@@ -105,12 +103,18 @@ int main(int argc, char *argv[]) {
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
 
 /**/
+
     acervo = NewHeap(lp->linha , lp->coluna);
+
 /*Aloca vetores necessários ao programa*/
+
 st = (int***)malloc(sizeof(int**) * lp->linha);
 for(i = 0; i < lp->linha; i++){
+
 	st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
+	
     for(j = 0; j < lp->coluna; j++){
+
         st[i][j] = (int*)malloc(sizeof(int) * 2);
     }
 }
@@ -231,22 +235,13 @@ for(i=0; i<8; i++){
 
 */
 /*FIM DE TESTES DE ERROS*/
-/*
-grafo = createGraph((lp->linhas)*(lp->colunas));
-*//*
-if(error_flag != 1){
-
-    for (j = 0; j<(lp->linha);j++){
-        for (i = 0; i<(lp->coluna);i++){
-            fillgraph(mapa, j, i, (lp->linha), (lp->coluna));
-            if()
-*/
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
-
+//printf("%d", error_flag);
     if(error_flag != 1 ){
-        if ((lp->modo == 'A')){
 
+        if ((lp->modo == 'A')){
+		//printf("blahblah");
             Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
   
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));

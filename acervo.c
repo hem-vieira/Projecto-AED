@@ -2,17 +2,18 @@
 #include <stdio.h>
 #include "acervo.h"
 #include "oper.h"
+#include "struct.h"
 #define MAX_VALUE 1000
 
 
 typedef struct _data{
     int x;
     int y;
-    int custo; /*prioridade */
+    int custo;          /*prioridade */
 }Data;
 
 /* O acervo é representado por uma estrutura*/
-struct _heap { 
+struct _heap{ 
     int n_elements; /* Numero elementos do acervo */
     int size;  /*tamanho máximo*/
     int linhas;
@@ -36,6 +37,7 @@ heap *NewHeap(int linhas, int colunas)
   h->linhas = linhas;
   h->colunas = colunas;
   h->heapdata = (Data *) malloc((linhas*colunas) * sizeof(Data));
+
   if (h->heapdata == NULL ) {
     exit(0);
   }
@@ -116,6 +118,7 @@ int Insert(heap * h, int pos_x, int pos_y)
   if (h->n_elements == h->size) {
     return 0;
   }
+
   /* Adiciona elemento na primeira posição disponível no acervo */
   h->heapdata[h->n_elements].x = pos_x;
   h->heapdata[h->n_elements].y = pos_y;
@@ -159,7 +162,6 @@ void RemoveMax(heap * h)
     (h->heapdata)[0].y = (h->heapdata)[h->n_elements - 1].y;
     (h->heapdata)[h->n_elements - 1].y = t;
 
-    free(h->heapdata[h->n_elements - 1]);
     h->n_elements--;
 
     FixDown(h, 0);
@@ -203,6 +205,8 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
     wt[vx][vy] = MAX_VALUE;
 
+    printf(" %d", wt[vx][vy]);
+
     if(Insert(h, vx, vy) == 0)
     exit(0);
 
@@ -210,6 +214,7 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
   }
 
   wt[xi][yi] = 0;
+
   changePrio(h, (yi * (h->colunas) + xi +1), wt[xi][yi]);
 
 
@@ -217,12 +222,20 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
     vx = GetTopx(h);
     vy = GetTopy(h);
+    printf("%d %d", vx, vy);
 
     RemoveMax(h);
 
     if(wt[vx][vy] != MAX_VALUE){
 
      encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
+
+   /*  printf("Adjacentes de %d %d:\n ",vx, vy);
+     for(i= 0; i<8; i++){
+        if(adj[i][0] !=-1){
+          printf("%d: %d %d\n", i, adj[i][0], adj[i][0]);
+        }
+      }*/
 
       for(i= 0; i<8; i++){
         if(adj[i][0] !=-1){
