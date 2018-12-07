@@ -38,7 +38,7 @@ oper.o: ficheiro.h struct.h oper.h oper.c
 
 struct.o: ficheiro.h struct.h oper.h struct.c
 
-acervo.o: acervo.h acervo.c
+acervo.o: acervo.h oper.h acervo.c 
 
 
 clean::

@@ -15,6 +15,12 @@ int Insert(heap * h, int pos_x, int pos_y);
 
 void changePrio(heap *h, int k, int novocusto);
 
-void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt , int** adj);
+void RemoveMax(heap * h)
+
+int GetTopx(heap * h);
+
+int GetTopy(heap * h);
+
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt);
 
 #endif

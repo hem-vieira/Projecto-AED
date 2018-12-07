@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
     fpOut = NULL;
     ronda* lp;
     heap* acervo;
-    int **adj;
+   // int adj[8][2];
     int*** st;
     int **wt;
     int j = 0;
@@ -94,7 +94,6 @@ int main(int argc, char *argv[]) {
     x = NULL;
     y = NULL;
     wt = NULL;
-    adj = NULL;
     st = NULL;
     custo = 0;
     validade = -1;
@@ -108,11 +107,11 @@ int main(int argc, char *argv[]) {
 /**/
     acervo = NewHeap(lp->linha , lp->coluna);
 /*Aloca vetores necessários ao programa*/
+st = (int***)malloc(sizeof(int**) * lp->linha);
 for(i = 0; i < lp->linha; i++){
+	st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
     for(j = 0; j < lp->coluna; j++){
-        for(k = 0; k < 2; k++){
-            st = (int***)malloc(sizeof(int**));
-        }
+        st[i][j] = (int*)malloc(sizeof(int) * 2);
     }
 }
 
@@ -121,12 +120,13 @@ for(i = 0; i < lp->linha; i++){
         wt = (int**)malloc(sizeof(int*));
     }
 }
+/*
+for(i=0; i<8; i++){
 
-for(i = 0; i < 8; i++){
-    for(j = 0; j < 2; j++){
-        adj = (int**)malloc(sizeof(int*));
-    }
-}
+		adj[i][0] = 0;
+		adj[i][1] = 0;
+	
+}*/
 
 
 /*  Aloca os vetores de acordo com o número de atrações */
@@ -247,7 +247,7 @@ if(error_flag != 1){
     if(error_flag != 1 ){
         if ((lp->modo == 'A')){
 
-            Dijkstra(acervo, mapa, x0, y0, x[1], y[1], st, wt, adj);
+            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
   
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
                 if(custo!=0)

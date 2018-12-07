@@ -1,7 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "acervo.h"
+#include "oper.h"
 #define MAX_VALUE 1000
+
+
 typedef struct _data{
     int x;
     int y;
@@ -46,10 +49,20 @@ heap *NewHeap(int linhas, int colunas)
 void FixUp(heap * h, int k)
 {
     int t;
+
   while ((k > 0) &&  h->heapdata[(k-1)/2].custo < h->heapdata[k].custo){
+
     t = h->heapdata[k].custo;
     (h->heapdata)[k].custo = (h->heapdata)[(k - 1) / 2].custo;
     (h->heapdata)[(k - 1) / 2].custo = t;
+
+    t = (h->heapdata)[k].x;
+    (h->heapdata)[k].x = (h->heapdata)[(k-1) / 2].x;
+    (h->heapdata)[(k-1) / 2].x = t;
+
+    t = (h->heapdata)[k].y;
+    (h->heapdata)[k].y = (h->heapdata)[(k-1) / 2].y;
+    (h->heapdata)[(k-1) / 2].y = t;
 
     k = (k - 1) / 2;
   }
@@ -65,6 +78,7 @@ void FixDown(heap * h, int k)
   int t;
 
   while ((2 * k + 1) < h->n_elements) {
+
     j = 2 * k + 1;
     if (((j + 1) < h->n_elements) && (h->heapdata[j].custo < h->heapdata[j + 1].custo)){
       j++;
@@ -80,6 +94,15 @@ void FixDown(heap * h, int k)
     t = (h->heapdata)[k].custo;
     (h->heapdata)[k].custo = (h->heapdata)[j].custo;
     (h->heapdata)[j].custo = t;
+
+    t = (h->heapdata)[k].x;
+    (h->heapdata)[k].x = (h->heapdata)[j].x;
+    (h->heapdata)[j].x = t;
+
+    t = (h->heapdata)[k].y;
+    (h->heapdata)[k].y = (h->heapdata)[j].y;
+    (h->heapdata)[j].y = t;
+
     k = j;
   }
 
@@ -106,13 +129,11 @@ int Insert(heap * h, int pos_x, int pos_y)
 void changePrio(heap *h, int k, int novocusto)
 {
   if( novocusto < h->heapdata[k].custo){
-    free(h->heapdata[k].custo);
     h->heapdata[k].custo = novocusto;
     FixDown(h, k);
 
   }
   else{
-    free(h->heapdata[k].custo);
     h->heapdata[k].custo = novocusto;
     FixUp(h, k);
   }
@@ -120,10 +141,58 @@ void changePrio(heap *h, int k, int novocusto)
   return;
 }
 
-void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int** adj ){
+void RemoveMax(heap * h)
+{
+  int t;
+
+  if (h->n_elements > 0) {
+
+    t = (h->heapdata)[0].custo;
+    (h->heapdata)[0].custo = (h->heapdata)[h->n_elements - 1].custo;
+    (h->heapdata)[h->n_elements - 1].custo = t;
+
+    t = (h->heapdata)[0].x;
+    (h->heapdata)[0].x = (h->heapdata)[h->n_elements - 1].x;
+    (h->heapdata)[h->n_elements - 1].x = t;
+
+    t = (h->heapdata)[0].y;
+    (h->heapdata)[0].y = (h->heapdata)[h->n_elements - 1].y;
+    (h->heapdata)[h->n_elements - 1].y = t;
+
+    free(h->heapdata[h->n_elements - 1]);
+    h->n_elements--;
+
+    FixDown(h, 0);
+
+  }
+
+  return;
+}
+
+int GetTopx(heap * h)
+{
+  int t;
+
+  t = (h->heapdata)[0].x;
+
+  return t;
+}
+
+int GetTopy(heap * h)
+{
+  int t;
+
+  t = (h->heapdata)[0].y;
+
+  return t;
+}
+
+
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
   
   int vx, vy, wx, wy;
   int i;
+  int adj[8][2];
   
   
 
@@ -142,18 +211,21 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
   wt[xi][yi] = 0;
   changePrio(h, (yi * (h->colunas) + xi +1), wt[xi][yi]);
-  vx =xi;
-  vy =yi;
-  
-  h->n_elements--;
+
 
   while (h->n_elements != 0){
 
+    vx = GetTopx(h);
+    vy = GetTopy(h);
+
+    RemoveMax(h);
+
     if(wt[vx][vy] != MAX_VALUE){
 
-      adj = encontraAdj(mapa, vx, vy, h->linhas, h->colunas);
+     encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
-      for(i= 0; adj[i][0] !=-1; i++){
+      for(i= 0; i<8; i++){
+        if(adj[i][0] !=-1){
 
         wx = adj[i][0];
         wy = adj[i][1];
@@ -164,19 +236,20 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
           changePrio(h, (wy * (h->colunas) + wx +1), wt[wx][wy]);
 
-          h->n_elements--;
           st[wx][wy][0] = vx;
           st[wx][wy][1] = vy;
 
+            }
           }
         }
       }
     }
+ /*   
 while(xf!= xi && yf!= yi){
   printf("Destino: x:%d y:%d e custo = %d, Vértice predecessor: x:%d y:%d", xf, yf, wt[xf][yf], st[xf][yf][0], st[xf][yf][1]);
   xf = st[xf][yf][0];
   yf = st[xf][yf][1];
-  }
+  }*/
 }
 
 
