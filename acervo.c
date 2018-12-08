@@ -53,7 +53,7 @@ void FixUp(heap * h, int k)
 {
     int t;
 
-  while ((k > 0) &&  h->heapdata[(k-1)/2].custo < h->heapdata[k].custo){
+  while ((k > 0) &&  h->heapdata[(k-1)/2].custo > h->heapdata[k].custo){
 
     t = h->heapdata[k].custo;
     (h->heapdata)[k].custo = (h->heapdata)[(k - 1) / 2].custo;
@@ -80,13 +80,13 @@ void FixDown(heap * h, int k)
   int j;
   int t;
 
-  while ((2 * k + 1) < h->n_elements) {
+  while ((2 * k) < h->n_elements) {
 
     j = 2 * k + 1;
-    if (((j + 1) < h->n_elements) && (h->heapdata[j].custo < h->heapdata[j + 1].custo)){
+    if ((j < h->n_elements) && (h->heapdata[j].custo > h->heapdata[j + 1].custo)){
       j++;
     }
-    if (!((h->heapdata[k].custo) < (h->heapdata[j].custo))){
+    if ((h->heapdata[k].custo) > (h->heapdata[j].custo)){
       /* Elements are in correct order. */
       break;
     }
@@ -195,6 +195,15 @@ int GetTopy(heap * h)
   return t;
 }
 
+int GetTopcusto(heap *h)
+{
+	int t;
+
+	t= (h->heapdata)[0].custo;
+
+	return t;
+}
+
 void printqueue(heap *h){
 for(int i=0; i< h->n_elements; i++){
 	printf("custo = %d\n", h->heapdata[i].custo);
@@ -205,7 +214,7 @@ for(int i=0; i< h->n_elements; i++){
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
 
   /*********/
-  int vx, vy, wx, wy;
+  int vx, vy, wx, wy, weight;
   int i;
   int adj[8][2];
   
@@ -230,47 +239,53 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
   wt[xi][yi] = 0;
 
-  changePrio(h, (yi * (h->colunas) + xi), wt[xi][yi]);
-  printqueue(h);
+  changePrio(h, (xi * (h->colunas) + yi), wt[xi][yi]);
+ 
 
 /******/
   while (h->n_elements != 0){
 
+	printqueue(h);
+
     vx = GetTopx(h);
     vy = GetTopy(h);
+	weight = GetTopcusto(h);
 
-  //  printf("1: %d %d\n", vx, vy);
-  //  printf("2: %d\n",wt[vx][vy]);
-
+	printf("Nº elementos: %d\n", h->n_elements);
+    printf("vx:%d vy:%d\n\n", vx, vy);
+    printf("wt:%d\n\n",weight);
+/*
+    if(vx == xf && vy == yf)
+    	break;
+*/
     RemoveMax(h);
 
-    if(wt[vx][vy] != MAX_VALUE){
+    if(weight != MAX_VALUE){
 
-     encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
+    encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
-     printf("Adjacentes de %d %d:\n ",vx, vy);
-
-     for(i= 0; i<8; i++){
-
-        if(adj[i][0] !=-1){
-
-          printf("%d: %d %d\n", i, adj[i][0], adj[i][1]);
-        }
-      }
+	printf("Adjacentes de %d %d:\n",vx,vy);
 
       for(i= 0; i<8; i++){
 
-        if(adj[i][0] !=-1){
+        if(adj[i][0] !=-1 && wt[adj[i][0]][adj[i][1]] == MAX_VALUE){
 
           wx = adj[i][0];
-
           wy = adj[i][1];
 
-          if(wt[wx][wy] > wt[vx][vy] + mapa[wx][wy]){
+	printf("%d: %d %d\n", i, wx, wy);
 
-             wt[wx][wy] = wt[vx][vy] + mapa[wx][wy];
+          if(wt[wx][wy] > weight + mapa[wx][wy]){
 
-              changePrio(h, (wy * (h->colunas) + wx +1), wt[wx][wy]);
+			printf("custo não relaxado: %d \n\n", weight);
+
+			printf("custo a acrescentar: %d \n\n", mapa[wx][wy]);
+
+             wt[wx][wy] = weight + mapa[wx][wy];
+
+			printf("custo relaxado: %d \n\n", wt[wx][wy]);
+
+              changePrio(h, (wx * (h->colunas) + wy), wt[wx][wy]);
 
               st[wx][wy][0] = vx;
               st[wx][wy][1] = vy;
@@ -282,6 +297,9 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
         }
 
       }
+
+
+
 
     }
 

@@ -19,8 +19,10 @@
 
     for(i=0; i<=7; i++){
         if(x+Adjs[i][0] >= 0 && x+Adjs[i][0] <= xmax && y+Adjs[i][1] >= 0 && y+Adjs[i][1] <= ymax){
+            if(matriz[x+Adjs[i][0]][y+Adjs[i][1]] != 0 ){
             adj[i][0] = x+Adjs[i][0];
             adj[i][1] = y+Adjs[i][1];
+           }
         }
     }
 /*

@@ -150,11 +150,12 @@ for(i = 0; i < lp->linha; i++){
     for (j = 0; j<(lp->linha);j++){
         for (i = 0; i<(lp->coluna);i++){            
             erro = fscanf(fpIn, "%d ", &mapa[j][i]);
+            printf("%d ",mapa[j][i]);
             if(erro!=1){
                 exit(0);
             }
         }
-                        
+           printf("\n");             
     }
 
  /* TESTES DE ERROS*/
@@ -248,6 +249,7 @@ for(i = 0; i < lp->linha; i++){
 
   
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
+                    
                 if(custo!=0)
                      validade = 1;
                  else 
