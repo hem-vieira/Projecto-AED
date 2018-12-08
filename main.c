@@ -91,6 +91,7 @@ int main(int argc, char *argv[]) {
     y = NULL;
     wt = NULL;
     st = NULL;
+    lol = NULL;
     custo = 0;
     validade = -1;
     erro = 0;
@@ -238,6 +239,7 @@ for(i = 0; i < lp->linha; i++){
          lol = alocaImpress(passos, mapa, st);
 
          impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
+
          printCaminho(fpOut, lol, passos);
 
     }
@@ -245,7 +247,7 @@ for(i = 0; i < lp->linha; i++){
 /* Libertação de memórias */
 
         freeMapa(mapa, lp);
-        freeThemAll(lp, x, y, st, wt, acervo);
+        freeThemAll(lp, x, y, st, wt, acervo, lol);
 
 }   /*Fim do ciclo do programa*/
 

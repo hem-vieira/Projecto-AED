@@ -214,6 +214,7 @@ void printqueue(heap *h){
 for(int i=0; i< h->n_elements; i++){
 	printf("custo = %d\n", h->heapdata[i].custo);
 }
+
 }
 
 int findIndex(heap *h, int x, int y)
@@ -359,7 +360,7 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 }
 
 
-void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo){
+void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo, impressao* imp){
   /*libertação de memória do array tridimensional*/
   int i = 0, j = 0;
   for(i=0;i<lp->linha;i++)
@@ -378,6 +379,7 @@ void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo){
         }
         free(wt);
   /*Libertação de memória do resto dos parâmetros*/
+        free(imp);
         free(acervo->heapdata);
         free(acervo);
         free(lp);
