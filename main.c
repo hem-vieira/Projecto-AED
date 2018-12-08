@@ -27,8 +27,8 @@ int main(int argc, char *argv[]) {
     fpIn = NULL;
     fpOut = NULL;
     ronda* lp;
+    impressao* lol;
     heap* acervo;
-   // int adj[8][2];
     int*** st;
     int **wt;
     int j = 0;
@@ -36,12 +36,10 @@ int main(int argc, char *argv[]) {
     int x0, y0;
     int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
-    //int breakerr;  /* variável que ajuda na terminação de certos ciclos caso haja um erro*/
-    //int pos_err; /* variável que impede o programa de continuar caso uma das posições dadas esteja fora do mapa ou de valor 0*/
-    //int jmp_err; /* variável que impede o programa de continuar caso uma das posições esteja fora do alcance dum salto de cavalo */
     int custo;
     int validade;
     int *x, *y;
+    int passos = 0;
 
 
     /*  Confirma o número de argumentos */
@@ -102,62 +100,7 @@ int main(int argc, char *argv[]) {
 
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
 
-/**/
-
-    acervo = NewHeap(lp->linha , lp->coluna);
-
-/*Aloca vetores necessários ao programa*/
-
-st = (int***)malloc(sizeof(int**) * lp->linha);
-for(i = 0; i < lp->linha; i++){
-
-	st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
-	
-    for(j = 0; j < lp->coluna; j++){
-
-        st[i][j] = (int*)malloc(sizeof(int) * 2);
-    }
-}
-
-
-
-/**/
-    wt = (int**)malloc((lp->linha)*sizeof(int*));
-    if( wt == NULL){
-        exit(0);
-    }
-    for(i = 0; i < lp->linha; i++){
-        wt[i] = (int*)malloc(lp->coluna*sizeof(int));
-        if (wt[i] == NULL){
-            exit(0);
-        }
-    }
-
-
-/*  Aloca os vetores de acordo com o número de atrações */
-
-    x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
-    y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
-
-/*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
-
-    readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
-
-/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/    
-    int **mapa;
-    mapa = alocMapa(lp->linha, lp->coluna);
-    
-    for (j = 0; j<(lp->linha);j++){
-        for (i = 0; i<(lp->coluna);i++){            
-            erro = fscanf(fpIn, "%d ", &mapa[j][i]);
-            if(erro!=1){
-                exit(0);
-            }
-        }
-           printf("\n");             
-    }
-
- /* TESTES DE ERROS*/
+    /* TESTES DE ERROS*/
  
  /* Confirma se o modo escolhido é válido   */   
 
@@ -198,76 +141,105 @@ for(i = 0; i < lp->linha; i++){
         }
     }
 
-/* Confirma se todas as posições dadas no ficheiro de entrada são válidas ( dentro do mapa e de valor > 0)  */
-/*
-    breakerr = 0;
-
-    if(error_flag != 1){
-        for (i = 0; i < (lp->numAtrac); i++){
-           // pos_err = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
-            if (pos_err == 1){
-                breakerr = 1;
-                fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
-
-            }
-            if(breakerr == 1){
-                error_flag = 1;
-                break;
-            }
-        }
-    }
-*/
-/* Confirma se todas as posições dadas estão ao alcance dum salto de cavalo da posição anteriro (FASE 1) */    
-/*
-        if(error_flag != 1){
-           
-            for (i = 0; i < ((lp->numAtrac)-1); i++){
-              //  jmp_err = check_knight_jump(x[i], y[i], x[i+1], y[i+1]);
-                if (jmp_err == 1){
-                    breakerr = 1;
-                    fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo);
-                }
-                if(breakerr == 1){
-                    error_flag = 1;
-                    break;
-                }
-            }
-        }
-
-*/
-    
 /*FIM DE TESTES DE ERROS*/
 
+
+/*Aloca o espaço para o acervo*/
+
+    acervo = NewHeap(lp->linha , lp->coluna);
+
+/*Aloca vetores necessários ao programa*/
+
+st = (int***)malloc(sizeof(int**) * lp->linha);
+for(i = 0; i < lp->linha; i++){
+
+	st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
+	
+    for(j = 0; j < lp->coluna; j++){
+
+        st[i][j] = (int*)malloc(sizeof(int) * 2);
+    }
+}
+
+
+
+/**/
+    wt = (int**)malloc((lp->linha)*sizeof(int*));
+    if( wt == NULL){
+        exit(0);
+    }
+    for(i = 0; i < lp->linha; i++){
+        wt[i] = (int*)malloc(lp->coluna*sizeof(int));
+        if (wt[i] == NULL){
+            exit(0);
+        }
+    }
+
+
+/*  Aloca os vetores de acordo com o número de atrações */
+
+    x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
+    y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
+
+/*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
+
+    readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
+
+/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/ 
+
+    int **mapa;
+    mapa = alocMapa(lp->linha, lp->coluna);
+    
+    for (j = 0; j<(lp->linha);j++){
+        for (i = 0; i<(lp->coluna);i++){            
+            erro = fscanf(fpIn, "%d ", &mapa[j][i]);
+            if(erro!=1){
+                exit(0);
+            }
+        }            
+    }
+
+ 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
-//printf("%d", error_flag);
 
     if(error_flag != 1 ){
 
         if ((lp->modo == 'A')){
 
-            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
+            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
 
-              //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
+                if(wt[x[1]][y[1]] != 0)
 
-                if(custo!=0)
-                     validade = 1;
+                     custo = wt[x[1]][y[1]];
                  else 
-                    validade = -1;
+                    custo = -1;
         }
         else if(lp->modo == 'B'){
 
             for(i=1; i<=((lp->numAtrac) - 1); i++)
             {
-              //  move_next_stepB(mapa, &x[i], &y[i], &custo);
-                validade = 1;
-        
+                Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
+
+
+                if(wt[x[1]][y[1]] != 0)
+
+                     custo = wt[x[1]][y[1]];
+                 else 
+                    custo = -1;
             }   
         }
+
         else if(lp->modo == 'C'){
 
         }
         
-        fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, validade, custo); //acrescentar
+        fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custo, passos);
+
+         lol = alocaImpress(passos, mapa, st);
+
+         impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
+         printCaminho(fpOut, lol, passos);
+
     }
 
 /* Libertação de memórias */

@@ -54,6 +54,26 @@ int **alocMapa(int linhas, int colunas){
    return matriz;
 }
 
+
+impressao* alocaImpress(int passo, int** mapa, int***st){
+    impressao* imp;
+    imp = (impressao*)malloc(sizeof(impressao) * passo);
+
+    if(imp == NULL){
+        exit(0);
+    }
+
+    return imp;
+}
+
+
+void fillImpress(int x, int y, int **mapa, int i, impressao* imp){   
+        imp[i].x = x;
+        imp[i].y = y;
+        imp[i].custo = mapa[x][y];
+}
+
+
 void freeMapa(int ** matriz, ronda* lp){
     int i = 0;
     for (i = 0; i < (lp->linha); i++){

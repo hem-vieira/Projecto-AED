@@ -10,6 +10,12 @@ typedef struct _ronda{
     int numAtrac;
 }ronda;
 
+typedef struct _impressao{
+	int x;
+	int y;
+	int custo;
+}impressao;
+
 void matAlloc(ronda *lp, int *colunas,int *linhas);
 
 void criaNovoNo (ronda** lp);

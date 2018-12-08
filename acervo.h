@@ -27,7 +27,13 @@ int GetTopcusto(heap *h);
 
 int findIndex(heap *h, int x, int y);
 
-void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt);
+int contaPassos(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa);
+
+void impressHelp(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa, int i, impressao* imp);
+
+void printCaminho(FILE *fp, impressao *imp, int passos);
+
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int *passos);
 
 void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo);
 

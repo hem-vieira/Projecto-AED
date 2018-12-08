@@ -3,9 +3,11 @@
 #include "acervo.h"
 #include "oper.h"
 #include "struct.h"
+#include "ficheiro.h"
 #include "limits.h"
 #define MAX_VALUE (INT_MAX)/2
 
+/*PASSAR ISTO PARA STRUCT.C*/
 
 typedef struct _data{
     int x;
@@ -224,16 +226,58 @@ int findIndex(heap *h, int x, int y)
 	return -1;
 }
 
+int contaPassos(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa){
 
-void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
+	int aux1 = st[xf][yf][0];
+	int aux2 = st[xf][yf][1];
+	int passo = 0;
+	passo++;
 
-  /*********/
+	while(aux1 != xi || aux2 != yi) 
+	{
+		int k=aux1;
+		int q=aux2;
+		aux1 = st[aux1][aux2][0];
+		aux2 = st[k][q][1];
+		passo++;
+	}
+	return passo;
+}
+
+void impressHelp(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa, int passo, impressao* imp){
+
+	int aux1 = xf;
+	int aux2 = yf;
+	int i= 0;
+
+	while(aux1 != xi || aux2 != yi) 
+	{
+		fillImpress(aux1, aux2, mapa, i, imp);
+		int k=aux1;
+		int q=aux2;
+		aux1 = st[aux1][aux2][0];
+		aux2 = st[k][q][1];
+		i++;
+
+	}
+}
+
+
+void printCaminho(FILE *fp, impressao *imp, int passos){
+
+	int loop;
+
+	for(loop = passos-1; loop >= 0; loop--)
+		fprintf(fp,"%d %d %d\n", imp[loop].x, imp[loop].y, imp[loop].custo);
+}
+
+
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int *passos){
+
   int vx, vy, wx, wy, weight;
   int i;
   int adj[8][2];
   
-  
-
   for( vx = 0;  vx < h->linhas ; vx++){
 
     for( vy = 0;  vy < h->colunas ; vy++){
@@ -253,23 +297,20 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
   wt[xi][yi] = 0;
 
-  changePrio(h, (xi * (h->colunas) + yi), wt[xi][yi]);
+  changePrio(h, 0, wt[xi][yi]);
  
 
 /******/
   while (h->n_elements != 0){
-	printqueue(h);
+
+	//printqueue(h);
 
     vx = GetTopx(h);
     vy = GetTopy(h);
 	weight = GetTopcusto(h);
 
-    printf("vx:%d vy:%d\n\n", vx, vy);
-    printf("wt:%d\n\n",weight);
-
-
     if(vx == xf && vy == yf){
-    	printf("Chegamos ao destino motherfucker!!!!!\n");
+    	*passos = contaPassos(st, wt, xf, yf, xi, yi, mapa);
     	break;
 }
 
@@ -279,8 +320,6 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
     encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
-//	printf("Adjacentes de %d %d:\n",vx,vy);
-
       for(i= 0; i<8; i++){
 
         if(adj[i][0] !=-1 && wt[adj[i][0]][adj[i][1]] == MAX_VALUE){
@@ -288,13 +327,9 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
           wx = adj[i][0];
           wy = adj[i][1];
 
-//	printf("%d: %d %d\n", i, wx, wy);
-
           if(wt[wx][wy] > weight + mapa[wx][wy]){
 
              wt[wx][wy] = weight + mapa[wx][wy];
-
-			printf("custo relaxado: %d \n\n", wt[wx][wy]);
 
 			int index = findIndex(h, wx, wy);
 

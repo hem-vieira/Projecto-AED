@@ -8,6 +8,8 @@ void readFileHeader(FILE *fp, int *linhas, int *colunas, char *modo, int *nAtrac
 void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac);
 int **alocMapa( int linhas, int colunas);
 void freeMapa(int ** matriz, ronda* lp);
+impressao* alocaImpress(int passo, int** mapa, int***st);
+void fillImpress(int x, int y, int **mapa, int passo, impressao* imp);
 
 
 
