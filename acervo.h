@@ -25,6 +25,8 @@ int GetTopy(heap * h);
 
 int GetTopcusto(heap *h);
 
+int findIndex(heap *h, int x, int y);
+
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt);
 
 void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo);

@@ -150,7 +150,6 @@ for(i = 0; i < lp->linha; i++){
     for (j = 0; j<(lp->linha);j++){
         for (i = 0; i<(lp->coluna);i++){            
             erro = fscanf(fpIn, "%d ", &mapa[j][i]);
-            printf("%d ",mapa[j][i]);
             if(erro!=1){
                 exit(0);
             }
@@ -236,20 +235,20 @@ for(i = 0; i < lp->linha; i++){
         }
 
 */
+    
 /*FIM DE TESTES DE ERROS*/
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 //printf("%d", error_flag);
+
     if(error_flag != 1 ){
 
         if ((lp->modo == 'A')){
-		printf("\nentrou\n");
-            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
-            		printf("\nsaiu\n");
 
-  
+            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
+
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
-                    
+
                 if(custo!=0)
                      validade = 1;
                  else 

@@ -24,6 +24,7 @@ struct _heap{
 
 
 /*cria o acervo e guarda todos os dados nos respetivos valores previamente definidos*/
+
 heap *NewHeap(int linhas, int colunas)
 {
   heap *h;
@@ -77,23 +78,25 @@ void FixUp(heap * h, int k)
 
 void FixDown(heap * h, int k)
 {
+
   int j;
   int t;
 
-  while ((2 * k) < h->n_elements) {
+  while ((2 * k) < h->n_elements-1) {
 
     j = 2 * k + 1;
-    if ((j < h->n_elements) && (h->heapdata[j].custo > h->heapdata[j + 1].custo)){
+
+    if ((j < h->n_elements-1) && (h->heapdata[j].custo > h->heapdata[j + 1].custo)){
       j++;
     }
-    if ((h->heapdata[k].custo) > (h->heapdata[j].custo)){
-      /* Elements are in correct order. */
+
+    if ((h->heapdata[k].custo) < (h->heapdata[j].custo)){
       break;
     }
-    
 
     /* the 2 elements are not correctly sorted, it is
        necessary to exchange them */
+
     t = (h->heapdata)[k].custo;
     (h->heapdata)[k].custo = (h->heapdata)[j].custo;
     (h->heapdata)[j].custo = t;
@@ -123,6 +126,7 @@ int Insert(heap * h, int pos_x, int pos_y)
   }
 
   /* Adiciona elemento na primeira posição disponível no acervo */
+
   h->heapdata[h->n_elements].x = pos_x;
 
   h->heapdata[h->n_elements].y = pos_y;
@@ -210,6 +214,16 @@ for(int i=0; i< h->n_elements; i++){
 }
 }
 
+int findIndex(heap *h, int x, int y)
+{
+	for(int i=0; i<h->n_elements; i++)
+	{
+		if(x==h->heapdata[i].x && y==h->heapdata[i].y)
+			return i;
+	}
+	return -1;
+}
+
 
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
 
@@ -244,27 +258,28 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
 /******/
   while (h->n_elements != 0){
-
 	printqueue(h);
 
     vx = GetTopx(h);
     vy = GetTopy(h);
 	weight = GetTopcusto(h);
 
-	printf("Nº elementos: %d\n", h->n_elements);
     printf("vx:%d vy:%d\n\n", vx, vy);
     printf("wt:%d\n\n",weight);
-/*
-    if(vx == xf && vy == yf)
+
+
+    if(vx == xf && vy == yf){
+    	printf("Chegamos ao destino motherfucker!!!!!\n");
     	break;
-*/
+}
+
     RemoveMax(h);
 
     if(weight != MAX_VALUE){
 
     encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
-	printf("Adjacentes de %d %d:\n",vx,vy);
+//	printf("Adjacentes de %d %d:\n",vx,vy);
 
       for(i= 0; i<8; i++){
 
@@ -273,19 +288,20 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
           wx = adj[i][0];
           wy = adj[i][1];
 
-	printf("%d: %d %d\n", i, wx, wy);
+//	printf("%d: %d %d\n", i, wx, wy);
 
           if(wt[wx][wy] > weight + mapa[wx][wy]){
-
-			printf("custo não relaxado: %d \n\n", weight);
-
-			printf("custo a acrescentar: %d \n\n", mapa[wx][wy]);
 
              wt[wx][wy] = weight + mapa[wx][wy];
 
 			printf("custo relaxado: %d \n\n", wt[wx][wy]);
 
-              changePrio(h, (wx * (h->colunas) + wy), wt[wx][wy]);
+			int index = findIndex(h, wx, wy);
+
+			if(index == -1)
+				break;
+
+              changePrio(h, index, wt[wx][wy]);
 
               st[wx][wy][0] = vx;
               st[wx][wy][1] = vy;
