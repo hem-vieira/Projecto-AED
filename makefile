@@ -13,7 +13,7 @@
 #         $ make
 #
 #     2) To clean all object files and the executable file of
-#        tuktuk, run
+#        tuktuk, runs
 #         $ make clean
 #
 

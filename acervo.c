@@ -3,7 +3,8 @@
 #include "acervo.h"
 #include "oper.h"
 #include "struct.h"
-#define MAX_VALUE 1000
+#include "limits.h"
+#define MAX_VALUE (INT_MAX)/2
 
 
 typedef struct _data{
@@ -22,7 +23,7 @@ struct _heap{
 };
 
 
-/*cria o cervo e guarda todos os dados nos respetivos valores previamente definidos*/
+/*cria o acervo e guarda todos os dados nos respetivos valores previamente definidos*/
 heap *NewHeap(int linhas, int colunas)
 {
   heap *h;
@@ -111,6 +112,8 @@ void FixDown(heap * h, int k)
   return;
 }
 
+
+
 /* Description: Adiciona elemento no fim do acervo e faz a função fixup*/
 
 int Insert(heap * h, int pos_x, int pos_y)
@@ -121,9 +124,13 @@ int Insert(heap * h, int pos_x, int pos_y)
 
   /* Adiciona elemento na primeira posição disponível no acervo */
   h->heapdata[h->n_elements].x = pos_x;
+
   h->heapdata[h->n_elements].y = pos_y;
+
   h->heapdata[h->n_elements].custo = MAX_VALUE;
+
   h->n_elements++;
+
   FixUp(h, h->n_elements - 1);
 
   return 1;
@@ -133,14 +140,13 @@ void changePrio(heap *h, int k, int novocusto)
 {
   if( novocusto < h->heapdata[k].custo){
     h->heapdata[k].custo = novocusto;
-    FixDown(h, k);
+    FixUp(h, k);
 
   }
   else{
     h->heapdata[k].custo = novocusto;
-    FixUp(h, k);
+    FixDown(h, k);
   }
-
   return;
 }
 
@@ -189,6 +195,12 @@ int GetTopy(heap * h)
   return t;
 }
 
+void printqueue(heap *h){
+for(int i=0; i< h->n_elements; i++){
+	printf("custo = %d\n", h->heapdata[i].custo);
+}
+}
+
 
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
 
@@ -200,7 +212,9 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
   
 
   for( vx = 0;  vx < h->linhas ; vx++){
+
     for( vy = 0;  vy < h->colunas ; vy++){
+
     st[vx][vy][0] = -1;                         //0 equivale ao x, 1 equivale ao y
     st[vx][vy][1] = -1;
 
@@ -208,23 +222,25 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
 
     if(Insert(h, vx, vy) == 0)
+
     exit(0);
 
     }
   }
 
-/*
-
   wt[xi][yi] = 0;
-*/
-  changePrio(h, (yi * (h->colunas) + xi +1), wt[xi][yi]);
+
+  changePrio(h, (yi * (h->colunas) + xi), wt[xi][yi]);
+  printqueue(h);
 
 /******/
   while (h->n_elements != 0){
 
     vx = GetTopx(h);
     vy = GetTopy(h);
-    printf("%d %d", vx, vy);
+
+  //  printf("1: %d %d\n", vx, vy);
+  //  printf("2: %d\n",wt[vx][vy]);
 
     RemoveMax(h);
 
@@ -233,21 +249,23 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
      encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
      printf("Adjacentes de %d %d:\n ",vx, vy);
+
      for(i= 0; i<8; i++){
+
         if(adj[i][0] !=-1){
-          printf("%d: %d %d\n", i, adj[i][0], adj[i][0]);
+
+          printf("%d: %d %d\n", i, adj[i][0], adj[i][1]);
         }
       }
 
       for(i= 0; i<8; i++){
-                printf("\n blah \n");
 
         if(adj[i][0] !=-1){
-        printf("\n lah0\n");
 
           wx = adj[i][0];
-          printf("\nblah1\n");
+
           wy = adj[i][1];
+
           if(wt[wx][wy] > wt[vx][vy] + mapa[wx][wy]){
 
              wt[wx][wy] = wt[vx][vy] + mapa[wx][wy];
@@ -260,20 +278,16 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
 
           }
-          printf("oooo");
+
         }
-          printf("end1!!\n");
+
       }
-                printf("end2!!\n");
 
     }
-              printf("end3!!\n");
 
   }
-            printf("end4!!\n");
 
-
-  }
+}
 
 
 void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo){

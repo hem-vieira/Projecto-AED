@@ -242,9 +242,9 @@ for(i = 0; i < lp->linha; i++){
     if(error_flag != 1 ){
 
         if ((lp->modo == 'A')){
-		printf("\nhahahhahahahahahhahahaah blahblah\n");
+		printf("\nentrou\n");
             Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
-            		printf("\ajksnhdkjaebdhjewnhdkjandhkaj\n");
+            		printf("\nsaiu\n");
 
   
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
