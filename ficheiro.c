@@ -54,4 +54,13 @@ int **alocMapa(int linhas, int colunas){
    return matriz;
 }
 
+void freeMapa(int ** matriz, ronda* lp){
+    int i = 0;
+    for (i = 0; i < (lp->linha); i++){
+        int* current = matriz[i];
+        free(current);
+        }
+    free(matriz);
+}
+
 

@@ -119,18 +119,19 @@ for(i = 0; i < lp->linha; i++){
     }
 }
 
-for(i = 0; i < lp->linha; i++){
-    for(j = 0; j < lp->coluna; j++){
-        wt = (int**)malloc(sizeof(int*));
-    }
-}
-/*
-for(i=0; i<8; i++){
 
-		adj[i][0] = 0;
-		adj[i][1] = 0;
-	
-}*/
+
+/**/
+    wt = (int**)malloc((lp->linha)*sizeof(int*));
+    if( wt == NULL){
+        exit(0);
+    }
+    for(i = 0; i < lp->linha; i++){
+        wt[i] = (int*)malloc(lp->coluna*sizeof(int));
+        if (wt[i] == NULL){
+            exit(0);
+        }
+    }
 
 
 /*  Aloca os vetores de acordo com o número de atrações */
@@ -241,8 +242,10 @@ for(i=0; i<8; i++){
     if(error_flag != 1 ){
 
         if ((lp->modo == 'A')){
-		//printf("blahblah");
+		printf("\nhahahhahahahahahhahahaah blahblah\n");
             Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt);
+            		printf("\ajksnhdkjaebdhjewnhdkjandhkaj\n");
+
   
               //  move_next_stepA(mapa, &x0, &y0, &custo, (lp->linha), (lp->coluna));
                 if(custo!=0)
@@ -267,16 +270,9 @@ for(i=0; i<8; i++){
     }
 
 /* Libertação de memórias */
-   
-        for (i = 0; i < (lp->linha); i++){
-        int* current = mapa[i];
-        free(current);
-        }
-        free(acervo);
-        free(mapa);
-        free(lp);
-        free(x);
-        free(y);
+
+        freeMapa(mapa, lp);
+        freeThemAll(lp, x, y, st, wt, acervo);
 
 }   /*Fim do ciclo do programa*/
 

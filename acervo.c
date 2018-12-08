@@ -191,7 +191,8 @@ int GetTopy(heap * h)
 
 
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt){
-  
+
+  /*********/
   int vx, vy, wx, wy;
   int i;
   int adj[8][2];
@@ -205,7 +206,6 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
     wt[vx][vy] = MAX_VALUE;
 
-    printf(" %d", wt[vx][vy]);
 
     if(Insert(h, vx, vy) == 0)
     exit(0);
@@ -213,11 +213,13 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
     }
   }
 
-  wt[xi][yi] = 0;
+/*
 
+  wt[xi][yi] = 0;
+*/
   changePrio(h, (yi * (h->colunas) + xi +1), wt[xi][yi]);
 
-
+/******/
   while (h->n_elements != 0){
 
     vx = GetTopx(h);
@@ -230,120 +232,73 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
      encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
-   /*  printf("Adjacentes de %d %d:\n ",vx, vy);
+     printf("Adjacentes de %d %d:\n ",vx, vy);
      for(i= 0; i<8; i++){
         if(adj[i][0] !=-1){
           printf("%d: %d %d\n", i, adj[i][0], adj[i][0]);
         }
-      }*/
+      }
 
       for(i= 0; i<8; i++){
+                printf("\n blah \n");
+
         if(adj[i][0] !=-1){
+        printf("\n lah0\n");
 
-        wx = adj[i][0];
-        wy = adj[i][1];
+          wx = adj[i][0];
+          printf("\nblah1\n");
+          wy = adj[i][1];
+          if(wt[wx][wy] > wt[vx][vy] + mapa[wx][wy]){
 
-        if(wt[wx][wy] > wt[vx][vy] + mapa[wx][wy]){
+             wt[wx][wy] = wt[vx][vy] + mapa[wx][wy];
 
-          wt[wx][wy] = wt[vx][vy] + mapa[wx][wy];
+              changePrio(h, (wy * (h->colunas) + wx +1), wt[wx][wy]);
 
-          changePrio(h, (wy * (h->colunas) + wx +1), wt[wx][wy]);
+              st[wx][wy][0] = vx;
+              st[wx][wy][1] = vy;
 
-          st[wx][wy][0] = vx;
-          st[wx][wy][1] = vy;
 
-            }
+
           }
+          printf("oooo");
         }
+          printf("end1!!\n");
       }
+                printf("end2!!\n");
+
     }
- /*   
-while(xf!= xi && yf!= yi){
-  printf("Destino: x:%d y:%d e custo = %d, Vértice predecessor: x:%d y:%d", xf, yf, wt[xf][yf], st[xf][yf][0], st[xf][yf][1]);
-  xf = st[xf][yf][0];
-  yf = st[xf][yf][1];
-  }*/
-}
+              printf("end3!!\n");
 
-
-
-
-
-
-
-
-/*Adiciona o elemento no fim do acervo mas não faz fixup */
-/*
-int Direct_Insert(Heap * h, Item element)
-{
-  if (h->n_elements == h->size) {
-    printf("Heap full (size = %d) !\n", h->size);
-    return 0;
   }
-  h->heapdata[h->n_elements] = element;
-
-  h->n_elements++;
+            printf("end4!!\n");
 
 
-  return 1;
-}
-*/
-
-/*
-void Modify(Heap * h, int index, Item newvalue)
-{
-  if (index > h->n_elements - 1) {
-    printf("Index out of range (index = %d) !\n", index);
-    return;
-  }*/
-  /* Compares new value  with the value of the element to substitute */
-  //if ((h->less) (newvalue, h->heapdata[index])) {
-    /* If smaller, reconstruct heap with function FixDown */
-    /*
-    free(h->heapdata[index]);
-    h->heapdata[index] = newvalue;
-    FixDown(h, index);
-  }
-  else {*/
-    /* If greater, reconstruct heap using the function FixUp */
-    /*
-    free(h->heapdata[index]);
-    h->heapdata[index] = newvalue;
-    FixUp(h, index);
   }
 
-  return;
+
+void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo){
+  /*libertação de memória do array tridimensional*/
+  int i = 0, j = 0;
+  for(i=0;i<lp->linha;i++)
+        {
+            for(j=0;j<lp->coluna ;j++)
+        {
+            free(st[i][j]);
+        }
+        free(st[i]);
+        }
+        free(st);
+/*libertação memória array bidimensional */
+        for(i=0;i< lp->linha ;i++)
+        {
+            free(wt[i]);
+        }
+        free(wt);
+  /*Libertação de memória do resto dos parâmetros*/
+        free(acervo->heapdata);
+        free(acervo);
+        free(lp);
+        free(x);
+        free(y);
+
 }
-*/
-/*
-Item RemoveMax(Heap * h)
-{
-  Item t;
-
-  if (h->n_elements > 0) {
-    t = (h->heapdata)[0];
-    (h->heapdata)[0] = (h->heapdata)[h->n_elements - 1];
-    (h->heapdata)[h->n_elements - 1] = t;
-    free(h->heapdata[h->n_elements - 1]);
-    h->n_elements--;
-    FixDown(h, 0);
-    return t;
-  }
-
-  return NULL;
-}
-*/
-/*
-Item GetIndex(Heap * h, int index)
-{
-  Item t;
-
-  if (index > h->n_elements - 1) {
-    printf("Index out of range (index = %d) !\n", index);
-    return NULL;
-  }
-
-  t = (h->heapdata)[index];
-  return t;
-}
-*/
