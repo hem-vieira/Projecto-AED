@@ -4,6 +4,16 @@
 #include "ficheiro.h"
 #include "struct.h"
 #include "oper.h"
+void iniciaVariaveis(int* i, int* x0, int* y0, int* custo, int* custoFinal, int* erro, int* error_flag, int* n_passos){
+    *i = 0;
+    *x0 = 0;
+    *y0 = 0;
+    *custo = 0;
+    *custoFinal = 0;
+    *erro = 0;
+    *error_flag = 0;
+    *n_passos = 0;
+}
 
 /* Garante que foi feita a leitura de 4 valores na primeira linha do ficheiro de entrada	*/
 
@@ -27,6 +37,20 @@ void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac){
         *y0 = y[0];
 
         i++;
+    }
+
+}
+
+void readMatrix(ronda* lp, int**mapa, FILE* fp){
+    int i =0, j = 0;
+    int erro;
+    for(i = 0; i < lp->linha ; i++){
+        for(j = 0; j < lp->coluna; j++){
+            erro = fscanf(fp, "%d", &mapa[i][j]);
+            if(erro != 1){
+                exit(0);
+            }
+        }
     }
 
 }
@@ -82,5 +106,53 @@ void freeMapa(int ** matriz, ronda* lp){
         }
     free(matriz);
 }
+
+int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
+    int verifier = 0;
+
+     /* Confirma se o modo escolhido é válido   */   
+    if ((lp->modo != 'A' ) && (lp->modo != 'B') && (lp->modo != 'C')){
+        *custoFinal = -1;
+        *n_passos = 0;
+        verifier = 1;
+        fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);
+        //error_flag = 1;
+    }
+    /*    Confirma se existem duas ou mais atrações para o modo B    */  
+    if(verifier == 0){
+        if(((lp->modo) == 'B') && ((lp->numAtrac)<2)){
+            *custoFinal = -1;
+            *n_passos = 0;
+            verifier = 1;
+            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);
+        }
+    }
+    /*    Confirma se existem apenas duas atrações para o modo A    */ 
+    if(verifier == 0){
+        if(((lp->modo) == 'A') && ((lp->numAtrac)!=2)){
+            *custoFinal = -1;
+            *n_passos = 0;
+            verifier = 1;
+            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos); 
+        }
+    }
+    /*    Confirma se existem duas ou mais atrações para o modo C    */ 
+    if(verifier == 0){
+        if(((lp->modo) == 'C') && ((lp->numAtrac)<2)){
+            *custoFinal = -1;
+            *n_passos = 0;
+            verifier = 1;
+            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);        
+        }
+    }
+
+    return verifier;
+}
+
+
+
+
+
+
 
 

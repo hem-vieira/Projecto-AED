@@ -35,6 +35,8 @@ void printCaminho(FILE *fp, impressao *imp, int passos);
 
 void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int *passos);
 
+int***  aloca3D(ronda* lp);
+
 void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo, impressao* imp);
 
 #endif

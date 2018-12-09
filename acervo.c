@@ -356,8 +356,31 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
     }
 
   }
-
 }
+
+int***  aloca3D(ronda* lp){
+  int i = 0, j = 0;
+  int*** array;
+  array = (int***)malloc(sizeof(int**) * lp->linha);
+  if (array == NULL){
+    exit(0);
+  }
+  for(i = 0; i < lp->linha; i++){
+    array[i] = (int**)malloc(sizeof(int*) * lp->coluna);
+    if(array[i] == NULL){
+      exit(0);
+    }	
+    for(j = 0; j < lp->coluna; j++){
+
+      array[i][j] = (int*)malloc(sizeof(int) * 2);
+      if(array[i][j] == NULL){
+        exit(0);
+      }
+    }
+  }
+  return array;
+}
+
 
 
 void freeThemAll(ronda* lp, int *x, int *y, int ***st, int **wt, heap* acervo, impressao* imp){
