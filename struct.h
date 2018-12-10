@@ -16,8 +16,25 @@ typedef struct _impressao{
 	int custo;
 }impressao;
 
+
+typedef struct _pontos{
+    int x;
+    int y;
+    int custo;
+}PONTO;
+
+typedef struct _etapa{
+    int n_passos;
+    PONTO* ponto;
+}ETAPA;
+
 void matAlloc(ronda *lp, int *colunas,int *linhas);
 
 void criaNovoNo (ronda** lp);
+ETAPA* alocaEtapa(int n_atrac);
+PONTO* alocaPonto(int n_passos);
+
+
+
 
 #endif

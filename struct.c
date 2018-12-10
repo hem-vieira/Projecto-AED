@@ -31,6 +31,25 @@ void criaNovoNo (ronda** lp)
 
 }
 
+ETAPA* alocaEtapa(int n_atrac){
+    int n_passos;
+    ETAPA* etapa;
+    etapa = (ETAPA*)malloc((n_atrac-1) * sizeof(ETAPA));
+    if (etapa == NULL){
+        exit(0);
+    }
+    return etapa;
+}
+
+PONTO* alocaPonto(int n_passos){
+    PONTO* novoPonto;
+    novoPonto = (PONTO*)malloc((n_passos-1)*sizeof(PONTO));
+    if (novoPonto == NULL){
+        exit(0);
+    }
+    return novoPonto;
+}
+
 
 
 

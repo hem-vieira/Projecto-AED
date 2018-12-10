@@ -21,7 +21,7 @@
 CC = gcc
 
 #  Compiler Flags
-CFLAGS = -Wall -O3 -pedantic -std=c99
+CFLAGS = -Wall -g -pedantic -std=c99
 
 #  Sources
 SOURCES = ficheiro.c struct.c oper.c acervo.c main.c

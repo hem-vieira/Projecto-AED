@@ -41,6 +41,8 @@ int main(int argc, char *argv[]) {
     int **mapa;
     int*** st;
     int **wt;
+    ETAPA* etapa;
+   /* PONTO* ponto;*/
 
     
     /*  Confirma o número de argumentos */
@@ -102,6 +104,13 @@ while (!feof(fpIn)){
     mapa = alocMapa(lp->linha, lp->coluna);  
 /* Guarda os valores de cada posição do mapa*/
     readMatrix(lp, mapa, fpIn);
+    etapa = alocaEtapa(lp->numAtrac);
+
+
+
+
+
+
 
 /* TESTES DE ERROS - se error_header== 1 significa que o programa não tem parâmetros adequados */
 
@@ -166,9 +175,29 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
             custoFinal = 0;
             passosTotal = 0;
    
+            etapa = alocaEtapa(lp->numAtrac);
             for(i=0; i<(lp->numAtrac-1); i++)
             {
                 Dijkstra(acervo, mapa, x[i], y[i], x[i+1], y[i+1], st, wt, &passos, &erro_adj);
+               
+                etapa[i].ponto = alocaPonto(passos);
+                int x_anterior, y_anterior;
+                x_anterior = x[i+1];
+                y_anterior = y[i+1];
+                int k,q;
+
+                for(j = 0; j < passos; j++){
+
+                    etapa[i].ponto[j].x = x_anterior;
+                    etapa[i].ponto[j].y = y_anterior;
+                    etapa[i].ponto[j].custo = mapa[x_anterior][y_anterior];
+
+                    k= x_anterior;
+	                q= y_anterior;
+                    x_anterior = st[k][q][0];
+                    y_anterior = st[k][q][1];
+
+                }
 
                 custoFinal = custoFinal + wt[x[i+1]][y[i+1]];
                 passosTotal = passosTotal + passos; 
@@ -177,10 +206,10 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
                 free(acervo);
 
                 acervo = NewHeap(lp->linha , lp->coluna);
-
+/*
                 lol = alocaImpress(passos, mapa, st);
                 impressHelp(st, wt, x[i+1], y[i+1], x[i], y[i], mapa, passos, lol);
-                printCaminho(fpOut, lol, passos);
+                printCaminho(fpOut, lol, passos);*/
             }   
 
         }
@@ -227,7 +256,13 @@ if((error_header == 1) || (error_location ==1))
         }
 
 }   /*Fim do ciclo do programa*/
-    
+/*  
+for(i = 0; i< lp->numAtrac; i++){
+    ETAPA* current;
+    *current = etapa[i];
+    free(current);
+}
+    */
 /* Libertação de memória alocada para o ficheiro de saída */
     free(nameFOut);
 /* Fecho dos ficheiros abertos e saída do programa */
