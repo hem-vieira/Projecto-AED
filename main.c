@@ -29,19 +29,16 @@ int main(int argc, char *argv[]) {
     int j = 0;
     int i;
     int x0, y0;
-    int error_flag; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
+    int error_header; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
+    int error_pontos = 0;
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
-    int custo;
     int custoFinal;
     int *x, *y;
     int passos = 0;
     int **mapa;
     int*** st;
     int **wt;
-    wt = NULL;
-    st = NULL;
-    mapa = NULL;
-    acervo = NULL;
+    
     /*  Confirma o número de argumentos */
     nameFIn = argv[1];
     if (argc != 2){
@@ -76,83 +73,74 @@ int main(int argc, char *argv[]) {
     }
     /*  Ciclo do programa   */
 
-    while (!feof(fpIn)){
+while (!feof(fpIn)){
 
-    /*Inicialização da estrutura*/
-     criaNovoNo(&lp);
-
-    iniciaVariaveis(&i, &x0, &y0, &custo, &custoFinal, &erro, &error_flag, &passos);
+    iniciaVariaveis(&i, &x0, &y0, &custoFinal, &erro, &error_header, &error_pontos, &passos);
+    wt = NULL;
+    st = NULL;
+    mapa = NULL;
+    acervo = NULL;
     x = NULL;
     y = NULL;
     lol = NULL;
+    lp = NULL;
+/*Inicialização da estrutura*/
+    criaNovoNo(&lp);
 /*  Lê a primeira linha do ficheiro de entrada e obtêm a dimensão do mapa (linha * coluna), o modo e o número de atrações   */
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
-/* TESTES DE ERROS - se error_flag == 1 significa que o programa não tem parâmetros adequados */
-    error_flag = headerVerifier(lp, fpOut, &custoFinal, &passos);
-/*FIM DE TESTES DE ERROS*/
+/* TESTES DE ERROS - se error_header== 1 significa que o programa não tem parâmetros adequados */
+    error_header = headerVerifier(lp, fpOut, &custoFinal, &passos);
 /*  Aloca os vetores de acordo com o número de atrações */
     x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
     y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
+/* Aloca o mapa com dimensão linha*coluna */ 
+    mapa = alocMapa(lp->linha, lp->coluna);  
+    
 /*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
     readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
-/*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
-if(lp->modo == 'A'){
-    if ((x[0] == x[1]) && (y[0] == y[1])){
-        error_flag = 1;
-        custo = 0;
-        passos = 0;
-        fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custo, passos);
+/* Guarda os valores de cada posição do mapa*/
+    readMatrix(lp, mapa, fpIn);
+    printf("Valor de error_header (%d) deve ser 0\n", error_header );
+printf("Valor de error_pontos (%d) deve ser 0\n", error_pontos );
+
+if (error_header == 0){
+    /*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
+    if(lp->modo == 'A'){
+        if ((x[0] == x[1]) && (y[0] == y[1])){
+            error_pontos = 1;
+            printf("Valor de error_pontos (%d) deve ser 1\n", error_pontos );
+            custoFinal = 0;
+            passos = 0;
+            fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
+        }
+        else
+            error_pontos = 0;
     }
 }
 
-
-
-
-/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/ 
-if(error_flag != 1){
-    
-    mapa = alocMapa(lp->linha, lp->coluna);  
-    readMatrix(lp, mapa, fpIn);
-    
+/*Só aloca memória do acervo e arrays se não tiver havido nenhum problema anteriormente*/
+if((error_header != 1) && (error_pontos != 1)){
     /*Aloca o espaço para o acervo*/
     acervo = NewHeap(lp->linha , lp->coluna);
     /*Aloca arrays necessários ao funcionamento do algoritmo*/
-        
-    /*st = aloca3D(lp);*/
-  st = (int***)malloc(sizeof(int**) * lp->linha);
-  if (st == NULL){
-    exit(0);
-  }
-  for(i = 0; i < lp->linha; i++){
-    st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
-    if(st[i] == NULL){
-      exit(0);
-    }	
-    for(j = 0; j < lp->coluna; j++){
-
-      st[i][j] = (int*)malloc(sizeof(int) * 2);
-      if(st[i][j] == NULL){
-        exit(0);
-      }
-    }
-  }
+    st = aloca3D(lp);
     wt = alocMapa(lp->linha, lp->coluna);
 }
 
-/*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 
-    if(error_flag != 1 ){
+/*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
+/*Após efetuada a leitura completa de um problema só se calcula solução se não houver erros */
+if((error_header != 1) && (error_pontos != 1)){
 
         if ((lp->modo == 'A')){
-
 
             Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
 
                 if(wt[x[1]][y[1]] != 0)
 
-                     custo = wt[x[1]][y[1]];
+                     custoFinal = wt[x[1]][y[1]];
                  else 
-                    custo = -1;
+                    custoFinal = -1;
         }
         else if(lp->modo == 'B'){
 
@@ -163,9 +151,9 @@ if(error_flag != 1){
 
                 if(wt[x[1]][y[1]] != 0)
 
-                     custo = wt[x[1]][y[1]];
+                     custoFinal = wt[x[1]][y[1]];
                  else 
-                    custo = -1;
+                    custoFinal = -1;
             }   
         }
 
@@ -173,22 +161,30 @@ if(error_flag != 1){
 
         }
         
-        fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custo, passos);
-
-         lol = alocaImpress(passos, mapa, st);
-
-         impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
-
-         printCaminho(fpOut, lol, passos);
+        fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
+        lol = alocaImpress(passos, mapa, st);
+        impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
+        printCaminho(fpOut, lol, passos);
         
-    }
+}
 
-/* Libertação de memórias */
+printf("p1:\n%d %d %c %d\n", lp->linha, lp->coluna, lp->modo, lp->numAtrac);
 
-        freeMapa(mapa, lp);
-        freeThemAll(lp, x, y, st, wt, acervo, lol);
+    /* Libertação de memórias */
+
+        if((error_header == 1) || (error_pontos == 1)){
+            freeMapa(mapa, lp);
+            free(y);
+            free(x);
+            free(lp);
+        }
+        else{
+            freeMapa(mapa, lp);
+            freeThemAll(lp, x, y, st, wt, acervo, lol);
+        }
 
 }   /*Fim do ciclo do programa*/
+    
 
 /* Libertação de memória alocada para o ficheiro de saída */
     free(nameFOut);

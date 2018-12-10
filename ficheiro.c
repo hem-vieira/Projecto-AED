@@ -4,14 +4,14 @@
 #include "ficheiro.h"
 #include "struct.h"
 #include "oper.h"
-void iniciaVariaveis(int* i, int* x0, int* y0, int* custo, int* custoFinal, int* erro, int* error_flag, int* n_passos){
+void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag, int* error_pontos, int* n_passos){
     *i = 0;
     *x0 = 0;
     *y0 = 0;
-    *custo = 0;
     *custoFinal = 0;
     *erro = 0;
-    *error_flag = 0;
+    *error_flag = 1;
+    *error_pontos = 0;
     *n_passos = 0;
 }
 
@@ -40,21 +40,6 @@ void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac){
     }
 
 }
-
-void readMatrix(ronda* lp, int**mapa, FILE* fp){
-    int i =0, j = 0;
-    int erro;
-    for(i = 0; i < lp->linha ; i++){
-        for(j = 0; j < lp->coluna; j++){
-            erro = fscanf(fp, "%d", &mapa[i][j]);
-            if(erro != 1){
-                exit(0);
-            }
-        }
-    }
-
-}
-
 /*Aloca o mapa*/
 
 int **alocMapa(int linhas, int colunas){
@@ -77,6 +62,21 @@ int **alocMapa(int linhas, int colunas){
 
    return matriz;
 }
+
+void readMatrix(ronda* lp, int**mapa, FILE* fp){
+    int i =0, j = 0;
+    int erro;
+    for(i = 0; i < lp->linha ; i++){
+        for(j = 0; j < lp->coluna; j++){
+            erro = fscanf(fp, "%d", &mapa[i][j]);
+            if(erro != 1){
+                exit(0);
+            }
+        }
+    }
+
+}
+
 
 
 impressao* alocaImpress(int passo, int** mapa, int***st){
@@ -101,9 +101,10 @@ void fillImpress(int x, int y, int **mapa, int i, impressao* imp){
 void freeMapa(int ** matriz, ronda* lp){
     int i = 0;
     for (i = 0; i < (lp->linha); i++){
-        int* current = matriz[i];
+        int*current;
+        current = matriz[i];
         free(current);
-        }
+    }
     free(matriz);
 }
 
@@ -116,7 +117,6 @@ int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
         *n_passos = 0;
         verifier = 1;
         fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);
-        //error_flag = 1;
     }
     /*    Confirma se existem duas ou mais atrações para o modo B    */  
     if(verifier == 0){
