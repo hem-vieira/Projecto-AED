@@ -235,6 +235,7 @@ int contaPassos(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa)
 	int passo = 0;
   int k = 0;
   int q = 0;
+  passo++;
 
 	while(x_anterior != xi || y_anterior != yi) 
 	{
@@ -285,6 +286,7 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
   int vx, vy, wx, wy, weight;
   int i;
+  int index;
   int adj[8][2];
   
   for( vx = 0;  vx < h->linhas ; vx++){
@@ -306,7 +308,9 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
   wt[xi][yi] = 0;
 
-  changePrio(h, 0, wt[xi][yi]);
+  index = findIndex(h, xi, yi);
+
+  changePrio(h, index, wt[xi][yi]);
  
 
 /******/
@@ -326,6 +330,7 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
     RemoveMax(h);
 
     if(weight != MAX_VALUE){
+   // printf("Adjacentes de %d %d:\n",vx,vy);
 
     encontraAdj(mapa, vx, vy, h->linhas, h->colunas, adj);
 
@@ -336,11 +341,12 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
           wx = adj[i][0];
           wy = adj[i][1];
 
+        //  printf("%d %d\n", wx, wy);
           if(wt[wx][wy] > weight + mapa[wx][wy]){
 
              wt[wx][wy] = weight + mapa[wx][wy];
 
-			int index = findIndex(h, wx, wy);
+		 index = findIndex(h, wx, wy);
 
 			if(index == -1)
 				break;

@@ -31,10 +31,11 @@ int main(int argc, char *argv[]) {
     int x0, y0;
     int error_header; /* variável usada para impedir que o programa continue caso haja um erro num dos testes de erro */
     int error_pontos = 0;
+    int error_location = 0;
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
     int custoFinal;
     int *x, *y;
-    int passos = 0;
+    int passos;
     int **mapa;
     int*** st;
     int **wt;
@@ -98,16 +99,18 @@ while (!feof(fpIn)){
 /* Guarda os valores de cada posição do mapa*/
     readMatrix(lp, mapa, fpIn);
 
-
-
 /* TESTES DE ERROS - se error_header== 1 significa que o programa não tem parâmetros adequados */
+
     error_header = headerVerifier(lp, fpOut, &custoFinal, &passos);
-if (error_header == 0){
+
+    if (error_header == 0){
+
     /*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
     if(lp->modo == 'A'){
+
         if ((x[0] == x[1]) && (y[0] == y[1])){
             error_pontos = 1;
-            printf("Valor de error_pontos (%d) deve ser 1\n", error_pontos );
+          //  printf("Valor de error_pontos (%d) deve ser 1\n", error_pontos );
             custoFinal = 0;
             passos = 0;
             fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
@@ -117,8 +120,16 @@ if (error_header == 0){
     }
 }
 
+ for (i = 0; i < (lp->numAtrac); i++){
+        error_location = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
+       // printf("erro location = %d\n", error_location);
+        if(error_location == 1)
+            break;
+    }
+
+
 /*Só aloca memória do acervo e arrays se não tiver havido nenhum problema anteriormente*/
-if((error_header != 1) && (error_pontos != 1)){
+if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
     /*Aloca o espaço para o acervo*/
     acervo = NewHeap(lp->linha , lp->coluna);
     /*Aloca arrays necessários ao funcionamento do algoritmo*/
@@ -129,7 +140,7 @@ if((error_header != 1) && (error_pontos != 1)){
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 /*Após efetuada a leitura completa de um problema só se calcula solução se não houver erros */
-if((error_header != 1) && (error_pontos != 1)){
+if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
 
         if ((lp->modo == 'A')){
 
@@ -159,19 +170,25 @@ if((error_header != 1) && (error_pontos != 1)){
         else if(lp->modo == 'C'){
 
         }
-        
+
+
         fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
         lol = alocaImpress(passos, mapa, st);
         impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
         printCaminho(fpOut, lol, passos);
+    
         
 }
+if((error_header == 1) || (error_location ==1))
+ fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
 
-printf("p1:\n%d %d %c %d\n", lp->linha, lp->coluna, lp->modo, lp->numAtrac);
+  //printf("%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
+
+//printf("p1:\n%d %d %c %d\n", lp->linha, lp->coluna, lp->modo, lp->numAtrac);
 
     /* Libertação de memórias */
 
-        if((error_header == 1) || (error_pontos == 1)){
+        if((error_header == 1) || (error_pontos == 1) || (error_location ==1)){
             freeMapa(mapa, lp);
             free(y);
             free(x);

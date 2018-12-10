@@ -4,11 +4,12 @@
 #include "ficheiro.h"
 #include "struct.h"
 #include "oper.h"
+
 void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag, int* error_pontos, int* n_passos){
     *i = 0;
     *x0 = 0;
     *y0 = 0;
-    *custoFinal = 0;
+    *custoFinal = -1;
     *erro = 0;
     *error_flag = 1;
     *error_pontos = 0;

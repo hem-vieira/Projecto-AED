@@ -27,4 +27,19 @@
     }
 }
 
+int checklocations(int x, int y, int nlinhas, int ncolunas, int** mapa){
+
+    if((x>=(nlinhas)) || (y>=(ncolunas)) || (x < 0)|| (y < 0)){
+        return 1;
+    }
+
+    else if((mapa[x][y]) <= 0){
+        return 1;
+
+    }    
+    else 
+        return 0;
+
+}
+
 
