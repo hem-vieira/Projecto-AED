@@ -88,21 +88,20 @@ while (!feof(fpIn)){
     criaNovoNo(&lp);
 /*  Lê a primeira linha do ficheiro de entrada e obtêm a dimensão do mapa (linha * coluna), o modo e o número de atrações   */
     readFileHeader(fpIn, &(lp->linha), &(lp->coluna), &(lp->modo), &(lp->numAtrac));
-/* TESTES DE ERROS - se error_header== 1 significa que o programa não tem parâmetros adequados */
-    error_header = headerVerifier(lp, fpOut, &custoFinal, &passos);
 /*  Aloca os vetores de acordo com o número de atrações */
     x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
     y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
-/* Aloca o mapa com dimensão linha*coluna */ 
-    mapa = alocMapa(lp->linha, lp->coluna);  
-    
 /*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
     readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
+/* Aloca o mapa com dimensão linha*coluna */ 
+    mapa = alocMapa(lp->linha, lp->coluna);  
 /* Guarda os valores de cada posição do mapa*/
     readMatrix(lp, mapa, fpIn);
-    printf("Valor de error_header (%d) deve ser 0\n", error_header );
-printf("Valor de error_pontos (%d) deve ser 0\n", error_pontos );
 
+
+
+/* TESTES DE ERROS - se error_header== 1 significa que o programa não tem parâmetros adequados */
+    error_header = headerVerifier(lp, fpOut, &custoFinal, &passos);
 if (error_header == 0){
     /*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
     if(lp->modo == 'A'){
@@ -185,7 +184,6 @@ printf("p1:\n%d %d %c %d\n", lp->linha, lp->coluna, lp->modo, lp->numAtrac);
 
 }   /*Fim do ciclo do programa*/
     
-
 /* Libertação de memória alocada para o ficheiro de saída */
     free(nameFOut);
 /* Fecho dos ficheiros abertos e saída do programa */
