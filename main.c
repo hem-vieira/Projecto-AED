@@ -35,6 +35,13 @@ int main(int argc, char *argv[]) {
     int custoFinal;
     int *x, *y;
     int passos = 0;
+    int **mapa;
+    int*** st;
+    int **wt;
+    wt = NULL;
+    st = NULL;
+    mapa = NULL;
+    acervo = NULL;
     /*  Confirma o número de argumentos */
     nameFIn = argv[1];
     if (argc != 2){
@@ -83,32 +90,61 @@ int main(int argc, char *argv[]) {
 /* TESTES DE ERROS - se error_flag == 1 significa que o programa não tem parâmetros adequados */
     error_flag = headerVerifier(lp, fpOut, &custoFinal, &passos);
 /*FIM DE TESTES DE ERROS*/
-
-/*Aloca o espaço para o acervo*/
-    acervo = NewHeap(lp->linha , lp->coluna);
-/*Aloca arrays necessários ao funcionamento do algoritmo*/
-    int*** st;
-    int **wt;
-    wt = NULL;
-    st = NULL;
-    st = aloca3D(lp);
-    wt = alocMapa(lp->linha, lp->coluna);
 /*  Aloca os vetores de acordo com o número de atrações */
     x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
     y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
 /*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
     readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
-/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/ 
+/*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
+if(lp->modo == 'A'){
+    if ((x[0] == x[1]) && (y[0] == y[1])){
+        error_flag = 1;
+        custo = 0;
+        passos = 0;
+        fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custo, passos);
+    }
+}
 
-    int **mapa;
+
+
+
+/* Aloca o mapa com dimensão linha*coluna e guarda os valores de cada posição do mapa*/ 
+if(error_flag != 1){
+    
     mapa = alocMapa(lp->linha, lp->coluna);  
     readMatrix(lp, mapa, fpIn);
+    
+    /*Aloca o espaço para o acervo*/
+    acervo = NewHeap(lp->linha , lp->coluna);
+    /*Aloca arrays necessários ao funcionamento do algoritmo*/
+        
+    /*st = aloca3D(lp);*/
+  st = (int***)malloc(sizeof(int**) * lp->linha);
+  if (st == NULL){
+    exit(0);
+  }
+  for(i = 0; i < lp->linha; i++){
+    st[i] = (int**)malloc(sizeof(int*) * lp->coluna);
+    if(st[i] == NULL){
+      exit(0);
+    }	
+    for(j = 0; j < lp->coluna; j++){
+
+      st[i][j] = (int*)malloc(sizeof(int) * 2);
+      if(st[i][j] == NULL){
+        exit(0);
+      }
+    }
+  }
+    wt = alocMapa(lp->linha, lp->coluna);
+}
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 
     if(error_flag != 1 ){
 
         if ((lp->modo == 'A')){
+
 
             Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
 
@@ -146,7 +182,6 @@ int main(int argc, char *argv[]) {
          printCaminho(fpOut, lol, passos);
         
     }
-    fprintf(fpOut, "\n");
 
 /* Libertação de memórias */
 

@@ -229,36 +229,43 @@ int findIndex(heap *h, int x, int y)
 
 int contaPassos(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa){
 
-	int aux1 = st[xf][yf][0];
-	int aux2 = st[xf][yf][1];
+	int x_anterior = st[xf][yf][0];
+	int y_anterior = st[xf][yf][1];
+  /**/
 	int passo = 0;
-	passo++;
+  int k = 0;
+  int q = 0;
 
-	while(aux1 != xi || aux2 != yi) 
+	while(x_anterior != xi || y_anterior != yi) 
 	{
-		int k=aux1;
-		int q=aux2;
-		aux1 = st[aux1][aux2][0];
-		aux2 = st[k][q][1];
-		passo++;
+      k=x_anterior;
+      q=y_anterior;
+      x_anterior = st[k][q][0];
+      y_anterior = st[k][q][1];
+      passo++;
+      if((x_anterior < 0) || (y_anterior < 0))
+      break;
 	}
 	return passo;
 }
 
 void impressHelp(int ***st, int **wt, int xf, int yf, int xi, int yi, int **mapa, int passo, impressao* imp){
 
-	int aux1 = xf;
-	int aux2 = yf;
+	int x_anterior = xf;
+	int y_anterior = yf;
+  int k,q;
 	int i= 0;
 
-	while(aux1 != xi || aux2 != yi) 
+	while(x_anterior != xi || y_anterior != yi) 
 	{
-		fillImpress(aux1, aux2, mapa, i, imp);
-		int k=aux1;
-		int q=aux2;
-		aux1 = st[aux1][aux2][0];
-		aux2 = st[k][q][1];
-		i++;
+		fillImpress(x_anterior, y_anterior, mapa, i, imp);
+		k= x_anterior;
+	  q= y_anterior;
+    x_anterior = st[k][q][0];
+    y_anterior = st[k][q][1];
+    i++;
+    if((x_anterior < 0) || (y_anterior < 0))
+    break;
 
 	}
 }
@@ -270,6 +277,7 @@ void printCaminho(FILE *fp, impressao *imp, int passos){
 
 	for(loop = passos-1; loop >= 0; loop--)
 		fprintf(fp,"%d %d %d\n", imp[loop].x, imp[loop].y, imp[loop].custo);
+  fprintf(fp, "\n");
 }
 
 
