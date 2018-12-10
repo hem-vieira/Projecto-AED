@@ -5,7 +5,7 @@
 #include "struct.h"
 #include "oper.h"
 
-void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag, int* error_pontos, int* n_passos){
+void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag, int* error_pontos, int* n_passos, int* erro_adj){
     *i = 0;
     *x0 = 0;
     *y0 = 0;
@@ -13,6 +13,7 @@ void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* 
     *erro = 0;
     *error_flag = 1;
     *error_pontos = 0;
+    *erro_adj = 0;
     *n_passos = 0;
 }
 

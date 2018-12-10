@@ -33,12 +33,15 @@ int main(int argc, char *argv[]) {
     int error_pontos = 0;
     int error_location = 0;
     int erro;       /* variável usada para garantir que se obtem todos os valores no mapa */
+    int erro_adj;
     int custoFinal;
+    int passosTotal;
     int *x, *y;
     int passos;
     int **mapa;
     int*** st;
     int **wt;
+
     
     /*  Confirma o número de argumentos */
     nameFIn = argv[1];
@@ -76,7 +79,7 @@ int main(int argc, char *argv[]) {
 
 while (!feof(fpIn)){
 
-    iniciaVariaveis(&i, &x0, &y0, &custoFinal, &erro, &error_header, &error_pontos, &passos);
+    iniciaVariaveis(&i, &x0, &y0, &custoFinal, &erro, &error_header, &error_pontos, &passos, &erro_adj);
     wt = NULL;
     st = NULL;
     mapa = NULL;
@@ -85,6 +88,7 @@ while (!feof(fpIn)){
     y = NULL;
     lol = NULL;
     lp = NULL;
+
 /*Inicialização da estrutura*/
     criaNovoNo(&lp);
 /*  Lê a primeira linha do ficheiro de entrada e obtêm a dimensão do mapa (linha * coluna), o modo e o número de atrações   */
@@ -103,14 +107,15 @@ while (!feof(fpIn)){
 
     error_header = headerVerifier(lp, fpOut, &custoFinal, &passos);
 
+
     if (error_header == 0){
 
     /*VERIFICAÇÃO DE ERROS NOS PONTOS DE PASSAGEM*/
+
     if(lp->modo == 'A'){
 
         if ((x[0] == x[1]) && (y[0] == y[1])){
             error_pontos = 1;
-          //  printf("Valor de error_pontos (%d) deve ser 1\n", error_pontos );
             custoFinal = 0;
             passos = 0;
             fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
@@ -122,7 +127,6 @@ while (!feof(fpIn)){
 
  for (i = 0; i < (lp->numAtrac); i++){
         error_location = checklocations(x[i], y[i], (lp->linha), (lp->coluna), mapa);
-       // printf("erro location = %d\n", error_location);
         if(error_location == 1)
             break;
     }
@@ -140,51 +144,74 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
 
 /*Dependendo do modo escolhido, chama-se a função responsável por verificar se o problema é válido e imprime-se os resultados para o ficheiro de saída*/        
 /*Após efetuada a leitura completa de um problema só se calcula solução se não houver erros */
+
 if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
 
         if ((lp->modo == 'A')){
+        
+            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos, &erro_adj);
 
-            Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
+            if(erro_adj == 1){
+                custoFinal = -1;
+               
+            }
 
-                if(wt[x[1]][y[1]] != 0)
-
-                     custoFinal = wt[x[1]][y[1]];
-                 else 
-                    custoFinal = -1;
+            else
+            custoFinal = wt[x[1]][y[1]];
+            
+            
         }
         else if(lp->modo == 'B'){
 
-            for(i=1; i<=((lp->numAtrac) - 1); i++)
+            custoFinal = 0;
+            passosTotal = 0;
+   
+            for(i=0; i<(lp->numAtrac-1); i++)
             {
-                Dijkstra(acervo, mapa, x[0], y[0], x[1], y[1], st, wt, &passos);
+                Dijkstra(acervo, mapa, x[i], y[i], x[i+1], y[i+1], st, wt, &passos, &erro_adj);
 
+                custoFinal = custoFinal + wt[x[i+1]][y[i+1]];
+                passosTotal = passosTotal + passos; 
 
-                if(wt[x[1]][y[1]] != 0)
+                free(acervo->heapdata);
+                free(acervo);
 
-                     custoFinal = wt[x[1]][y[1]];
-                 else 
-                    custoFinal = -1;
+                acervo = NewHeap(lp->linha , lp->coluna);
+
+                lol = alocaImpress(passos, mapa, st);
+                impressHelp(st, wt, x[i+1], y[i+1], x[i], y[i], mapa, passos, lol);
+                printCaminho(fpOut, lol, passos);
             }   
+
         }
 
         else if(lp->modo == 'C'){
+            //MODO C AVAILABLE SOON IN A STORE NEAR YOU
+        }
+
+        if(lp->modo == 'B')
+            fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passosTotal);
+
+        else{
+
+            fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
+        
+            if(custoFinal !=-1 && (lp->modo == 'A')){
+
+                lol = alocaImpress(passos, mapa, st);
+                impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
+                printCaminho(fpOut, lol, passos);
+            }
 
         }
 
-
-        fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
-        lol = alocaImpress(passos, mapa, st);
-        impressHelp(st, wt, x[1], y[1], x[0], y[0], mapa, passos, lol);
-        printCaminho(fpOut, lol, passos);
+    fprintf(fpOut,"\n");
     
         
 }
+
 if((error_header == 1) || (error_location ==1))
  fprintf(fpOut, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
-
-  //printf("%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passos);
-
-//printf("p1:\n%d %d %c %d\n", lp->linha, lp->coluna, lp->modo, lp->numAtrac);
 
     /* Libertação de memórias */
 

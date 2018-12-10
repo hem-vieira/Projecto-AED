@@ -7,23 +7,6 @@
 #include "limits.h"
 #define MAX_VALUE (INT_MAX)/2
 
-/*PASSAR ISTO PARA STRUCT.C*/
-
-typedef struct _data{
-    int x;
-    int y;
-    int custo;          /*prioridade */
-}Data;
-
-/* O acervo é representado por uma estrutura*/
-struct _heap{ 
-    int n_elements; /* Numero elementos do acervo */
-    int size;  /*tamanho máximo*/
-    int linhas;
-    int colunas;
-    Data *heapdata; /*tabela de Items*/
-};
-
 
 /*cria o acervo e guarda todos os dados nos respetivos valores previamente definidos*/
 
@@ -278,16 +261,24 @@ void printCaminho(FILE *fp, impressao *imp, int passos){
 
 	for(loop = passos-1; loop >= 0; loop--)
 		fprintf(fp,"%d %d %d\n", imp[loop].x, imp[loop].y, imp[loop].custo);
-  fprintf(fp, "\n");
+
 }
 
 
-void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int *passos){
+void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, int** wt, int *passos, int *erro){
 
   int vx, vy, wx, wy, weight;
   int i;
+  int j=0;
   int index;
   int adj[8][2];
+
+  encontraAdj(mapa, xf, yf, h->linhas, h->colunas, adj);
+    
+  if(adj[0][0] == -1 && adj[1][0] == -1 && adj[2][0] == -1 && adj[3][0] == -1 && adj[4][0] == -1 && adj[5][0] == -1 && adj[6][0] == -1 && adj[7][0] == -1){
+    *erro = 1; 
+       return;
+     }
   
   for( vx = 0;  vx < h->linhas ; vx++){
 
@@ -298,6 +289,8 @@ void Dijkstra(heap *h, int** mapa, int xi, int yi, int xf, int yf, int*** st, in
 
     wt[vx][vy] = MAX_VALUE;
 
+    //printf("%d:ola\n",j);
+    j++;
 
     if(Insert(h, vx, vy) == 0)
 

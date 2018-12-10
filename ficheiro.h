@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "struct.h"
 #include "oper.h"
-void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag,int* error_pontos, int* n_passos);
+void iniciaVariaveis(int* i, int* x0, int* y0, int* custoFinal, int* erro, int* error_flag,int* error_pontos, int* n_passos, int* erro_adj);
 void readFileHeader(FILE *fp, int *linhas, int *colunas, char *modo, int *nAtrac);
 void readFile(FILE *fp, int *x0, int *y0, int *x, int *y, int nAtrac);
 int **alocMapa( int linhas, int colunas);
