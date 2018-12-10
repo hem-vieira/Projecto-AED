@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
     int erro_adj;
     int custoFinal;
     int passosTotal;
-    int *x, *y;
+    int *x, *y, *vetorpass;
     int passos;
     int **mapa;
     int*** st;
@@ -88,6 +88,7 @@ while (!feof(fpIn)){
     acervo = NULL;
     x = NULL;
     y = NULL;
+    vetorpass = NULL;
     lol = NULL;
     lp = NULL;
 
@@ -98,6 +99,7 @@ while (!feof(fpIn)){
 /*  Aloca os vetores de acordo com o número de atrações */
     x = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
     y = (int*)malloc(((lp->numAtrac)*sizeof(int)) + 1);
+    vetorpass = (int*)malloc(sizeof(int)*lp->numAtrac-1);
 /*  Lê e guarda as respetivas coordenadas de cada posição nos respetivos vetores( x -> linhas, y-> colunas)   */
     readFile(fpIn, &x0, &y0, x, y, (lp->numAtrac));
 /* Aloca o mapa com dimensão linha*coluna */ 
@@ -176,11 +178,20 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
             passosTotal = 0;
    
             etapa = alocaEtapa(lp->numAtrac);
+
+
             for(i=0; i<(lp->numAtrac-1); i++)
             {
                 Dijkstra(acervo, mapa, x[i], y[i], x[i+1], y[i+1], st, wt, &passos, &erro_adj);
+
+                if(erro_adj == 1){
+                custoFinal = -1;
+                passosTotal = 0;
+                break;
+            }
                
                 etapa[i].ponto = alocaPonto(passos);
+
                 int x_anterior, y_anterior;
                 x_anterior = x[i+1];
                 y_anterior = y[i+1];
@@ -199,6 +210,8 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
 
                 }
 
+                vetorpass[i] = passos;
+
                 custoFinal = custoFinal + wt[x[i+1]][y[i+1]];
                 passosTotal = passosTotal + passos; 
 
@@ -206,10 +219,8 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
                 free(acervo);
 
                 acervo = NewHeap(lp->linha , lp->coluna);
-/*
-                lol = alocaImpress(passos, mapa, st);
-                impressHelp(st, wt, x[i+1], y[i+1], x[i], y[i], mapa, passos, lol);
-                printCaminho(fpOut, lol, passos);*/
+
+              
             }   
 
         }
@@ -218,8 +229,23 @@ if((error_header != 1) && (error_pontos != 1) && (error_location != 1)){
             //MODO C AVAILABLE SOON IN A STORE NEAR YOU
         }
 
-        if(lp->modo == 'B')
+
+        if(lp->modo == 'B'){
             fprintf(fpOut, "%d %d %c %d %d %d\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, custoFinal, passosTotal);
+
+            if(erro_adj != 1){
+               
+
+            for(i=0; i<(lp->numAtrac-1); i++){
+
+            	for(j=vetorpass[i]-1; j>=0; j--){
+
+            		fprintf(fpOut, "%d %d %d\n",etapa[i].ponto[j].x, etapa[i].ponto[j].y, etapa[i].ponto[j].custo);
+            		}
+            	}
+
+			}
+        }
 
         else{
 

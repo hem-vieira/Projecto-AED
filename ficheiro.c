@@ -118,7 +118,6 @@ int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
         *custoFinal = -1;
         *n_passos = 0;
         verifier = 1;
-        fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);
     }
     /*    Confirma se existem duas ou mais atrações para o modo B    */  
     if(verifier == 0){
@@ -126,7 +125,6 @@ int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
             *custoFinal = -1;
             *n_passos = 0;
             verifier = 1;
-            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);
         }
     }
     /*    Confirma se existem apenas duas atrações para o modo A    */ 
@@ -135,7 +133,6 @@ int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
             *custoFinal = -1;
             *n_passos = 0;
             verifier = 1;
-            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos); 
         }
     }
     /*    Confirma se existem duas ou mais atrações para o modo C    */ 
@@ -143,8 +140,7 @@ int headerVerifier(ronda* lp, FILE* fp, int *custoFinal, int *n_passos){
         if(((lp->modo) == 'C') && ((lp->numAtrac)<2)){
             *custoFinal = -1;
             *n_passos = 0;
-            verifier = 1;
-            fprintf(fp, "%d %d %c %d %d %d\n\n",lp->linha, lp->coluna, lp->modo, lp->numAtrac, *custoFinal, *n_passos);        
+            verifier = 1;       
         }
     }
 
